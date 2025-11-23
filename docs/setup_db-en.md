@@ -21,10 +21,10 @@ npm run db:init
 ```
 
 **What it does:**
--  Checks if bot tables already exist
--  If not exists � Creates 15 tables from `database/schema.sql`
--  Adds default currency (WhiteCat Coins)
--  If exists � Skips and suggests using `db:reset`
+- ✅ Checks if bot tables already exist
+- ✅ If not exists → Creates 15 tables from `database/schema.sql`
+- ✅ Adds default currency (WhiteCat Coins)
+- ✅ If exists → Skips and suggests using `db:reset`
 
 **When to use:**
 - First time project setup
@@ -34,33 +34,33 @@ npm run db:init
 
 ### `npm run db:reset` - Reset and recreate bot tables
 
-Drops all bot tables and recreates them from scratch. � **LOSES ALL DATA!**
+Drops all bot tables and recreates them from scratch. ⚠️ **LOSES ALL DATA!**
 
 ```bash
 npm run db:reset
 ```
 
 **What it does:**
-- � Drops 15 bot tables (with confirmation)
--  Recreates from schema.sql
--  Adds default currency
--  Other tables in DB are **NOT affected**
+- ⚠️ Drops 15 bot tables (with confirmation)
+- ✅ Recreates from schema.sql
+- ✅ Adds default currency
+- ✅ Other tables in DB are **NOT affected**
 
 **When to use:**
 - During development and need to reset data
 - Major schema changes
 - Fixing structure issues
 
-**� WARNING:**
+**⚠️ WARNING:**
 ```
 Type "yes" to continue: yes
 
 Dropping bot tables...
-   Dropped: command_logs
-   Dropped: giveaway_entries
-   Dropped: giveaway_requirements
+  ✓ Dropped: command_logs
+  ✓ Dropped: giveaway_entries
+  ✓ Dropped: giveaway_requirements
   ...
-   Dropped: users
+  ✓ Dropped: users
 
 All data in bot tables will be LOST!
 Other tables in database will NOT be affected.
@@ -77,9 +77,9 @@ npm run db:drop
 ```
 
 **What it does:**
-- � Drops 15 bot tables in correct order (respects foreign keys)
--  Other tables are **NOT deleted**
--  Asks for confirmation before dropping
+- ⚠️ Drops 15 bot tables in correct order (respects foreign keys)
+- ✅ Other tables are **NOT deleted**
+- ✅ Asks for confirmation before dropping
 
 **When to use:**
 - Want to remove bot tables but keep other tables
@@ -96,9 +96,9 @@ npm run db:clear
 ```
 
 **What it does:**
-- � Drops all tables that are NOT bot tables
--  Keeps 15 bot tables + data
--  Shows list of tables to be dropped before confirmation
+- ⚠️ Drops all tables that are NOT bot tables
+- ✅ Keeps 15 bot tables + data
+- ✅ Shows list of tables to be dropped before confirmation
 
 **When to use:**
 - Database has many old/test tables not in use
@@ -108,15 +108,15 @@ npm run db:clear
 **Example:**
 ```
 Found 3 non-bot tables to drop:
-  " test_users
-  " old_payments
-  " debug_table
+  • test_users
+  • old_payments
+  • debug_table
 
 Type "yes" to continue: yes
 
- Dropped: test_users
- Dropped: old_payments
- Dropped: debug_table
+✓ Dropped: test_users
+✓ Dropped: old_payments
+✓ Dropped: debug_table
 
 Kept 15 bot tables.
 ```
