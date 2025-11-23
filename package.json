@@ -1,5 +1,19 @@
 {
+  "name": "whitecat-bot",
+  "version": "4.1.0",
+  "description": "WhiteCat Discord Bot with Economy, Giveaways, and Web Dashboard",
+  "scripts": {
+    "db:init": "node src/db/init.js",
+    "db:drop": "node src/db/drop.js",
+    "db:clear": "node src/db/clear.js",
+    "db:reset": "node src/db/reset.js"
+  },
   "dependencies": {
-    "dotenv": "^17.2.3"
+    "dotenv": "^17.2.3",
+    "pg": "^8.11.3"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
