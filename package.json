@@ -3,16 +3,21 @@
   "version": "4.1.0",
   "description": "WhiteCat Discord Bot with Economy, Giveaways, and Web Dashboard",
   "scripts": {
-    "db:init": "node src/db/init.js",
-    "db:drop": "node src/db/drop.js",
-    "db:clear": "node src/db/clear.js",
-    "db:reset": "node src/db/reset.js"
+    "db:init": "ts-node src/db/init.ts",
+    "db:drop": "ts-node src/db/drop.ts",
+    "db:clear": "ts-node src/db/clear.ts",
+    "db:reset": "ts-node src/db/reset.ts"
   },
   "dependencies": {
     "dotenv": "^17.2.3",
     "pg": "^8.11.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "@types/pg": "^8.15.6",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
   "engines": {
     "node": ">=18.0.0"
   }

@@ -5,12 +5,14 @@
  * Drops all tables EXCEPT the ones used by WhiteCat Bot
  */
 
-require('dotenv').config();
-const { Client } = require('pg');
-const readline = require('readline');
+import dotenv from 'dotenv';
+import { Client, ClientConfig } from 'pg';
+import readline from 'readline';
+
+dotenv.config();
 
 // Database configuration from environment variables
-const dbConfig = {
+const dbConfig: ClientConfig = {
   host: process.env.DB_HOST,
   port: parseInt(process.env.DB_PORT || '5432'),
   database: process.env.DB_NAME,
@@ -44,13 +46,13 @@ const colors = {
   red: '\x1b[31m',
   yellow: '\x1b[33m',
   blue: '\x1b[34m',
-};
+} as const;
 
-function log(message, color = colors.reset) {
+function log(message: string, color: string = colors.reset): void {
   console.log(`${color}${message}${colors.reset}`);
 }
 
-function askConfirmation(question) {
+function askConfirmation(question: string): Promise<boolean> {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -131,10 +133,12 @@ async function clearNonBotTables() {
     log('\n==========================================', colors.red);
     log('❌ Clear operation failed!', colors.red);
     log('==========================================', colors.red);
-    log(`\nError: ${error.message}`, colors.red);
 
-    if (error.code) {
-      log(`Error Code: ${error.code}`, colors.red);
+    const err = error as any;
+    log(`\nError: ${err.message || 'Unknown error'}`, colors.red);
+
+    if (err.code) {
+      log(`Error Code: ${err.code}`, colors.red);
     }
 
     process.exit(1);

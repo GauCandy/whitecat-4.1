@@ -5,13 +5,15 @@
  * Initializes PostgreSQL database with schema from database/schema.sql
  */
 
-require('dotenv').config();
-const { Client } = require('pg');
-const fs = require('fs');
-const path = require('path');
+import dotenv from 'dotenv';
+import { Client, ClientConfig } from 'pg';
+import fs from 'fs';
+import path from 'path';
+
+dotenv.config();
 
 // Database configuration from environment variables
-const dbConfig = {
+const dbConfig: ClientConfig = {
   host: process.env.DB_HOST,
   port: parseInt(process.env.DB_PORT || '5432'),
   database: process.env.DB_NAME,
@@ -26,9 +28,9 @@ const colors = {
   red: '\x1b[31m',
   yellow: '\x1b[33m',
   blue: '\x1b[34m',
-};
+} as const;
 
-function log(message, color = colors.reset) {
+function log(message: string, color: string = colors.reset): void {
   console.log(`${color}${message}${colors.reset}`);
 }
 
@@ -116,14 +118,16 @@ async function initDatabase() {
     log('\n==========================================', colors.red);
     log('❌ Database initialization failed!', colors.red);
     log('==========================================', colors.red);
-    log(`\nError: ${error.message}`, colors.red);
 
-    if (error.code) {
-      log(`Error Code: ${error.code}`, colors.red);
+    const err = error as any;
+    log(`\nError: ${err.message || 'Unknown error'}`, colors.red);
+
+    if (err.code) {
+      log(`Error Code: ${err.code}`, colors.red);
     }
 
-    if (error.detail) {
-      log(`Details: ${error.detail}`, colors.red);
+    if (err.detail) {
+      log(`Details: ${err.detail}`, colors.red);
     }
 
     process.exit(1);

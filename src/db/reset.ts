@@ -1,16 +1,21 @@
 #!/usr/bin/env node
 
 /**
- * Drop Bot Tables Script
- * Drops only the tables used by WhiteCat Bot
+ * Database Reset Script
+ * Drops bot tables and recreates them
+ * WARNING: This will delete all bot data!
  */
 
-require('dotenv').config();
-const { Client } = require('pg');
-const readline = require('readline');
+import dotenv from 'dotenv';
+import { Client, ClientConfig } from 'pg';
+import fs from 'fs';
+import path from 'path';
+import readline from 'readline';
+
+dotenv.config();
 
 // Database configuration from environment variables
-const dbConfig = {
+const dbConfig: ClientConfig = {
   host: process.env.DB_HOST,
   port: parseInt(process.env.DB_PORT || '5432'),
   database: process.env.DB_NAME,
@@ -44,13 +49,13 @@ const colors = {
   red: '\x1b[31m',
   yellow: '\x1b[33m',
   blue: '\x1b[34m',
-};
+} as const;
 
-function log(message, color = colors.reset) {
+function log(message: string, color: string = colors.reset): void {
   console.log(`${color}${message}${colors.reset}`);
 }
 
-function askConfirmation(question) {
+function askConfirmation(question: string): Promise<boolean> {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -64,13 +69,14 @@ function askConfirmation(question) {
   });
 }
 
-async function dropBotTables() {
+async function resetDatabase() {
   log('\n==========================================', colors.red);
-  log('⚠️  DROP BOT TABLES - WARNING', colors.red);
+  log('⚠️  RESET BOT TABLES - WARNING', colors.red);
   log('==========================================\n', colors.red);
-  log('This will DELETE the following bot tables:', colors.yellow);
+  log('This will DELETE bot tables and recreate them:', colors.yellow);
   BOT_TABLES.forEach(table => log(`  • ${table}`, colors.yellow));
-  log('\nAll data in these tables will be LOST!', colors.red);
+  log('\nAll data in bot tables will be LOST!', colors.red);
+  log('Other tables in database will NOT be affected.', colors.green);
   log('\nDatabase:', colors.blue);
   log(`  Host: ${dbConfig.host}`, colors.blue);
   log(`  Database: ${dbConfig.database}\n`, colors.blue);
@@ -79,7 +85,7 @@ async function dropBotTables() {
   const confirmed = await askConfirmation('Type "yes" to continue: ');
 
   if (!confirmed) {
-    log('\n❌ Drop cancelled.', colors.yellow);
+    log('\n❌ Reset cancelled.', colors.yellow);
     process.exit(0);
   }
 
@@ -90,9 +96,40 @@ async function dropBotTables() {
     await client.connect();
     log('✓ Connected successfully!', colors.green);
 
-    // Check which tables exist
-    log('\nChecking existing tables...', colors.yellow);
-    const existingResult = await client.query(`
+    // Drop bot tables only
+    log('\nDropping bot tables...', colors.yellow);
+    for (const table of BOT_TABLES) {
+      await client.query(`DROP TABLE IF EXISTS ${table} CASCADE;`);
+      log(`  ✓ Dropped: ${table}`, colors.green);
+    }
+
+    // Read and execute schema
+    log('\nReading schema file...', colors.yellow);
+    const schemaPath = path.join(__dirname, '../../database/schema.sql');
+
+    if (!fs.existsSync(schemaPath)) {
+      throw new Error(`Schema file not found at: ${schemaPath}`);
+    }
+
+    const schema = fs.readFileSync(schemaPath, 'utf8');
+    log('✓ Schema file loaded!', colors.green);
+
+    log('\nRecreating bot tables...', colors.yellow);
+    await client.query(schema);
+    log('✓ Bot tables created successfully!', colors.green);
+
+    // Insert default data
+    log('\nInserting default data...', colors.yellow);
+    await client.query(`
+      INSERT INTO currencies (code, name, emoji, is_tradeable, is_active)
+      VALUES
+        ('COIN', 'WhiteCat Coins', '🪙', true, true)
+      ON CONFLICT (code) DO NOTHING;
+    `);
+    log('✓ Default currency added!', colors.green);
+
+    // Verify
+    const result = await client.query(`
       SELECT table_name
       FROM information_schema.tables
       WHERE table_schema = 'public'
@@ -100,39 +137,22 @@ async function dropBotTables() {
       ORDER BY table_name;
     `, [BOT_TABLES]);
 
-    const existingTables = existingResult.rows.map(row => row.table_name);
-
-    if (existingTables.length === 0) {
-      log('✓ No bot tables found in database.', colors.green);
-      log('\n==========================================', colors.blue);
-      log('Nothing to drop!', colors.green);
-      log('==========================================\n', colors.blue);
-      return;
-    }
-
-    log(`Found ${existingTables.length} bot tables to drop.`, colors.yellow);
-
-    // Drop tables
-    log('\nDropping bot tables...', colors.yellow);
-    for (const table of BOT_TABLES) {
-      if (existingTables.includes(table)) {
-        await client.query(`DROP TABLE IF EXISTS ${table} CASCADE;`);
-        log(`  ✓ Dropped: ${table}`, colors.green);
-      }
-    }
+    log(`\n✓ Recreated ${result.rows.length} bot tables`, colors.green);
 
     log('\n==========================================', colors.blue);
-    log('Bot tables dropped successfully!', colors.green);
+    log('Bot tables reset completed!', colors.green);
     log('==========================================\n', colors.blue);
 
   } catch (error) {
     log('\n==========================================', colors.red);
-    log('❌ Drop operation failed!', colors.red);
+    log('❌ Database reset failed!', colors.red);
     log('==========================================', colors.red);
-    log(`\nError: ${error.message}`, colors.red);
 
-    if (error.code) {
-      log(`Error Code: ${error.code}`, colors.red);
+    const err = error as any;
+    log(`\nError: ${err.message || 'Unknown error'}`, colors.red);
+
+    if (err.code) {
+      log(`Error Code: ${err.code}`, colors.red);
     }
 
     process.exit(1);
@@ -142,5 +162,5 @@ async function dropBotTables() {
   }
 }
 
-// Run drop
-dropBotTables();
+// Run reset
+resetDatabase();
