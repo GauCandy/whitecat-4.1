@@ -7,24 +7,24 @@
 - [Overview](#overview)
 - [User & Authentication](#user--authentication)
   - [1. USERS](#1-users---discord-user-information)
-  - [10. OAUTH_TOKENS](#10-oauth_tokens---discord-oauth-tokens)
-  - [11. WEB_SESSIONS](#11-web_sessions---web-login-sessions)
-  - [12. USER_GUILD_PERMISSIONS](#12-user_guild_permissions---user-guild-permissions)
+  - [2. OAUTH_TOKENS](#2-oauth_tokens---discord-oauth-tokens)
+  - [3. WEB_SESSIONS](#3-web_sessions---web-login-sessions)
+  - [4. USER_GUILD_PERMISSIONS](#4-user_guild_permissions---user-guild-permissions)
 - [Economy System](#economy-system)
-  - [2. CURRENCIES](#2-currencies---currency-types)
-  - [3. USER_BALANCES](#3-user_balances---current-balances)
-  - [5. TRANSACTIONS](#5-transactions---transaction-history)
+  - [5. CURRENCIES](#5-currencies---currency-types)
+  - [6. USER_BALANCES](#6-user_balances---current-balances)
+  - [7. TRANSACTIONS](#7-transactions---transaction-history)
 - [Guild Management](#guild-management)
-  - [4. GUILDS](#4-guilds---discord-servers)
-  - [13. AUTO_RESPONSES](#13-auto_responses---automatic-responses)
-  - [14. AUTO_RESPONSE_BLOCKED_CHANNELS](#14-auto_response_blocked_channels---auto-response-blocked-channels)
-  - [15. COMMAND_CHANNEL_RESTRICTIONS](#15-command_channel_restrictions---command-channel-restrictions)
+  - [8. GUILDS](#8-guilds---discord-servers)
+  - [9. AUTO_RESPONSES](#9-auto_responses---automatic-responses)
+  - [10. AUTO_RESPONSE_BLOCKED_CHANNELS](#10-auto_response_blocked_channels---auto-response-blocked-channels)
+  - [11. COMMAND_CHANNEL_RESTRICTIONS](#11-command_channel_restrictions---command-channel-restrictions)
 - [Giveaway System](#giveaway-system)
-  - [6. GIVEAWAYS](#6-giveaways---contestsgiveaways)
-  - [7. GIVEAWAY_REQUIREMENTS](#7-giveaway_requirements---giveaway-requirements)
-  - [8. GIVEAWAY_ENTRIES](#8-giveaway_entries---giveaway-participants)
+  - [12. GIVEAWAYS](#12-giveaways---contestsgiveaways)
+  - [13. GIVEAWAY_REQUIREMENTS](#13-giveaway_requirements---giveaway-requirements)
+  - [14. GIVEAWAY_ENTRIES](#14-giveaway_entries---giveaway-participants)
 - [Logging & Analytics](#logging--analytics)
-  - [9. COMMAND_LOGS](#9-command_logs---command-logs)
+  - [15. COMMAND_LOGS](#15-command_logs---command-logs)
 - [Database Relationships](#database-relationships)
 - [Workflows](#workflows)
 
@@ -73,7 +73,7 @@
 
 ---
 
-### 10. OAUTH_TOKENS - Discord OAuth tokens
+### 2. OAUTH_TOKENS - Discord OAuth tokens
 
 **Purpose:** Store tokens for calling Discord API from web dashboard.
 
@@ -98,7 +98,7 @@
 
 ---
 
-### 11. WEB_SESSIONS - Web Login Sessions
+### 3. WEB_SESSIONS - Web Login Sessions
 
 **Purpose:** Manage user sessions on web dashboard.
 
@@ -124,7 +124,7 @@
 
 ---
 
-### 12. USER_GUILD_PERMISSIONS - User Guild Permissions
+### 4. USER_GUILD_PERMISSIONS - User Guild Permissions
 
 **Purpose:** Cache user permissions in guilds. Used for web dashboard (bot checks directly via slash commands).
 
@@ -148,7 +148,7 @@
 
 ## Economy System
 
-### 2. CURRENCIES - Currency Types
+### 5. CURRENCIES - Currency Types
 
 **Purpose:** Manage currency types in the system (COIN, VND, USD...).
 
@@ -171,7 +171,7 @@
 
 ---
 
-### 3. USER_BALANCES - Current Balances
+### 6. USER_BALANCES - Current Balances
 
 **Purpose:** Snapshot of user current balances. TRANSACTIONS is the source of truth, this table is for fast queries only.
 
@@ -195,7 +195,7 @@
 
 ---
 
-### 5. TRANSACTIONS - Transaction History
+### 7. TRANSACTIONS - Transaction History
 
 **Purpose:** Log all money transactions (append-only). Source of truth for entire economy system.
 
@@ -235,7 +235,7 @@
 
 ## Guild Management
 
-### 4. GUILDS - Discord Servers
+### 8. GUILDS - Discord Servers
 
 **Purpose:** Store configuration for servers with bot.
 
@@ -258,7 +258,7 @@
 
 ---
 
-### 13. AUTO_RESPONSES - Automatic Responses
+### 9. AUTO_RESPONSES - Automatic Responses
 
 **Purpose:** Bot automatically replies when keyword is detected.
 
@@ -292,7 +292,7 @@
 
 ---
 
-### 14. AUTO_RESPONSE_BLOCKED_CHANNELS - Auto Response Blocked Channels
+### 10. AUTO_RESPONSE_BLOCKED_CHANNELS - Auto Response Blocked Channels
 
 **Purpose:** List of channels where auto responses are disabled.
 
@@ -314,7 +314,7 @@
 
 ---
 
-### 15. COMMAND_CHANNEL_RESTRICTIONS - Command Channel Restrictions
+### 11. COMMAND_CHANNEL_RESTRICTIONS - Command Channel Restrictions
 
 **Purpose:** Block specific commands in specific channels.
 
@@ -338,7 +338,7 @@
 
 ## Giveaway System
 
-### 6. GIVEAWAYS - Contests/Giveaways
+### 12. GIVEAWAYS - Contests/Giveaways
 
 **Purpose:** Manage giveaways on Discord.
 
@@ -367,7 +367,7 @@
 
 ---
 
-### 7. GIVEAWAY_REQUIREMENTS - Giveaway Requirements
+### 13. GIVEAWAY_REQUIREMENTS - Giveaway Requirements
 
 **Purpose:** Store conditions for participating in giveaway.
 
@@ -395,7 +395,7 @@
 
 ---
 
-### 8. GIVEAWAY_ENTRIES - Giveaway Participants
+### 14. GIVEAWAY_ENTRIES - Giveaway Participants
 
 **Purpose:** Track who participated in which giveaway.
 
@@ -420,7 +420,7 @@
 
 ## Logging & Analytics
 
-### 9. COMMAND_LOGS - Command Logs
+### 15. COMMAND_LOGS - Command Logs
 
 **Purpose:** Log all executed commands. Used for analytics, debugging, monitoring.
 

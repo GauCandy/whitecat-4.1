@@ -7,24 +7,24 @@
 - [Tổng quan](#tổng-quan)
 - [User & Authentication](#user--authentication)
   - [1. USERS](#1-users---thông-tin-người-dùng-discord)
-  - [10. OAUTH_TOKENS](#10-oauth_tokens---discord-oauth-tokens)
-  - [11. WEB_SESSIONS](#11-web_sessions---phiên-đăng-nhập-web)
-  - [12. USER_GUILD_PERMISSIONS](#12-user_guild_permissions---quyền-hạn-user-trong-guild)
+  - [2. OAUTH_TOKENS](#2-oauth_tokens---discord-oauth-tokens)
+  - [3. WEB_SESSIONS](#3-web_sessions---phiên-đăng-nhập-web)
+  - [4. USER_GUILD_PERMISSIONS](#4-user_guild_permissions---quyền-hạn-user-trong-guild)
 - [Economy System](#economy-system)
-  - [2. CURRENCIES](#2-currencies---các-loại-tiền-tệ)
-  - [3. USER_BALANCES](#3-user_balances---số-dư-hiện-tại)
-  - [5. TRANSACTIONS](#5-transactions---lịch-sử-giao-dịch)
+  - [5. CURRENCIES](#5-currencies---các-loại-tiền-tệ)
+  - [6. USER_BALANCES](#6-user_balances---số-dư-hiện-tại)
+  - [7. TRANSACTIONS](#7-transactions---lịch-sử-giao-dịch)
 - [Guild Management](#guild-management)
-  - [4. GUILDS](#4-guilds---server-discord)
-  - [13. AUTO_RESPONSES](#13-auto_responses---tự-động-trả-lời)
-  - [14. AUTO_RESPONSE_BLOCKED_CHANNELS](#14-auto_response_blocked_channels---channels-tắt-auto-response)
-  - [15. COMMAND_CHANNEL_RESTRICTIONS](#15-command_channel_restrictions---hạn-chế-lệnh-theo-channel)
+  - [8. GUILDS](#8-guilds---server-discord)
+  - [9. AUTO_RESPONSES](#9-auto_responses---tự-động-trả-lời)
+  - [10. AUTO_RESPONSE_BLOCKED_CHANNELS](#10-auto_response_blocked_channels---channels-tắt-auto-response)
+  - [11. COMMAND_CHANNEL_RESTRICTIONS](#11-command_channel_restrictions---hạn-chế-lệnh-theo-channel)
 - [Giveaway System](#giveaway-system)
-  - [6. GIVEAWAYS](#6-giveaways---cuộc-thiphần-quà)
-  - [7. GIVEAWAY_REQUIREMENTS](#7-giveaway_requirements---yêu-cầu-tham-gia-giveaway)
-  - [8. GIVEAWAY_ENTRIES](#8-giveaway_entries---người-tham-gia-giveaway)
+  - [12. GIVEAWAYS](#12-giveaways---cuộc-thiphần-quà)
+  - [13. GIVEAWAY_REQUIREMENTS](#13-giveaway_requirements---yêu-cầu-tham-gia-giveaway)
+  - [14. GIVEAWAY_ENTRIES](#14-giveaway_entries---người-tham-gia-giveaway)
 - [Logging & Analytics](#logging--analytics)
-  - [9. COMMAND_LOGS](#9-command_logs---nhật-ký-lệnh)
+  - [15. COMMAND_LOGS](#15-command_logs---nhật-ký-lệnh)
 - [Database Relationships](#database-relationships)
 - [Workflows](#workflows)
 
@@ -73,7 +73,7 @@
 
 ---
 
-### 10. OAUTH_TOKENS - Discord OAuth tokens
+### 2. OAUTH_TOKENS - Discord OAuth tokens
 
 **Mục đích:** Lưu tokens để gọi Discord API cho web dashboard.
 
@@ -98,7 +98,7 @@
 
 ---
 
-### 11. WEB_SESSIONS - Phiên đăng nhập web
+### 3. WEB_SESSIONS - Phiên đăng nhập web
 
 **Mục đích:** Quản lý sessions của user trên web dashboard.
 
@@ -124,7 +124,7 @@
 
 ---
 
-### 12. USER_GUILD_PERMISSIONS - Quyền hạn user trong guild
+### 4. USER_GUILD_PERMISSIONS - Quyền hạn user trong guild
 
 **Mục đích:** Cache permissions của user trong các guild. Dùng cho web dashboard (bot check trực tiếp qua slash commands).
 
@@ -148,7 +148,7 @@
 
 ## Economy System
 
-### 2. CURRENCIES - Các loại tiền tệ
+### 5. CURRENCIES - Các loại tiền tệ
 
 **Mục đích:** Quản lý các loại tiền trong hệ thống (COIN, VND, USD...).
 
@@ -171,7 +171,7 @@
 
 ---
 
-### 3. USER_BALANCES - Số dư hiện tại
+### 6. USER_BALANCES - Số dư hiện tại
 
 **Mục đích:** Snapshot số dư hiện tại của user. TRANSACTIONS là source of truth, bảng này chỉ để query nhanh.
 
@@ -195,7 +195,7 @@
 
 ---
 
-### 5. TRANSACTIONS - Lịch sử giao dịch
+### 7. TRANSACTIONS - Lịch sử giao dịch
 
 **Mục đích:** Log mọi giao dịch tiền (append-only). Là source of truth cho toàn bộ hệ thống kinh tế.
 
@@ -235,7 +235,7 @@
 
 ## Guild Management
 
-### 4. GUILDS - Server Discord
+### 8. GUILDS - Server Discord
 
 **Mục đích:** Lưu cấu hình của các server có bot.
 
@@ -258,7 +258,7 @@
 
 ---
 
-### 13. AUTO_RESPONSES - Tự động trả lời
+### 9. AUTO_RESPONSES - Tự động trả lời
 
 **Mục đích:** Bot tự động reply khi detect keyword.
 
@@ -292,7 +292,7 @@
 
 ---
 
-### 14. AUTO_RESPONSE_BLOCKED_CHANNELS - Channels tắt auto response
+### 10. AUTO_RESPONSE_BLOCKED_CHANNELS - Channels tắt auto response
 
 **Mục đích:** Danh sách channels không dùng auto response.
 
@@ -314,7 +314,7 @@
 
 ---
 
-### 15. COMMAND_CHANNEL_RESTRICTIONS - Hạn chế lệnh theo channel
+### 11. COMMAND_CHANNEL_RESTRICTIONS - Hạn chế lệnh theo channel
 
 **Mục đích:** Block commands cụ thể ở channels cụ thể.
 
@@ -338,7 +338,7 @@
 
 ## Giveaway System
 
-### 6. GIVEAWAYS - Cuộc thi/Phần quà
+### 12. GIVEAWAYS - Cuộc thi/Phần quà
 
 **Mục đích:** Quản lý các giveaway trên Discord.
 
@@ -367,7 +367,7 @@
 
 ---
 
-### 7. GIVEAWAY_REQUIREMENTS - Yêu cầu tham gia giveaway
+### 13. GIVEAWAY_REQUIREMENTS - Yêu cầu tham gia giveaway
 
 **Mục đích:** Lưu các điều kiện để tham gia giveaway.
 
@@ -395,7 +395,7 @@
 
 ---
 
-### 8. GIVEAWAY_ENTRIES - Người tham gia giveaway
+### 14. GIVEAWAY_ENTRIES - Người tham gia giveaway
 
 **Mục đích:** Theo dõi ai đã tham gia giveaway nào.
 
@@ -420,7 +420,7 @@
 
 ## Logging & Analytics
 
-### 9. COMMAND_LOGS - Nhật ký lệnh
+### 15. COMMAND_LOGS - Nhật ký lệnh
 
 **Mục đích:** Log tất cả commands được thực thi. Dùng cho analytics, debug, monitoring.
 
