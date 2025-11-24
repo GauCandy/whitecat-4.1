@@ -1,15 +1,16 @@
 /**
  * i18n - Internationalization Module
- * Handles multi-language support for WhiteCat Bot
+ * Simple direct import from TypeScript
+ * All translations loaded into RAM on startup - no disk reads during runtime
  */
 
-import en from './locales/en';
 import vi from './locales/vi';
+import enUS from './locales/en-US';
 
-// Supported locales
+// Supported locales - loaded once into RAM
 export const locales = {
-  'en-US': en,
-  'en': en,
+  'en-US': enUS,
+  'en': enUS,
   'vi-VN': vi,
   'vi': vi,
 } as const;
@@ -18,7 +19,7 @@ export type Locale = keyof typeof locales;
 export type TranslationKey = string;
 
 // Current locale
-let currentLocale: Locale = 'en-US';
+let currentLocale: Locale = 'vi';
 
 /**
  * Initialize i18n system
@@ -28,7 +29,7 @@ export function init(locale?: string): void {
   if (locale && locale in locales) {
     currentLocale = locale as Locale;
   } else {
-    currentLocale = 'en-US';
+    currentLocale = 'vi';
   }
 
   console.log(`\x1b[32m✓ i18n initialized with locale: ${currentLocale}\x1b[0m`);
@@ -53,7 +54,7 @@ export function setLocale(locale: Locale): void {
 
 /**
  * Get translation by key
- * @param key Translation key (e.g., 'common.error', 'startup.database_connected')
+ * @param key Translation key (e.g., 'general.ping.reply')
  * @param replacements Object with placeholder replacements
  * @param locale Override locale for this translation
  * @returns Translated string
@@ -64,7 +65,7 @@ export function t(
   locale?: Locale
 ): string {
   const targetLocale = locale || currentLocale;
-  const translations = locales[targetLocale] || locales['en-US'];
+  const translations = locales[targetLocale] || locales['vi'];
 
   // Navigate through nested keys
   const keys = key.split('.');
@@ -74,8 +75,8 @@ export function t(
     if (value && typeof value === 'object' && k in value) {
       value = value[k];
     } else {
-      // Fallback to English if key not found
-      value = locales['en-US'];
+      // Fallback to Vietnamese if key not found
+      value = locales['vi'];
       for (const k2 of keys) {
         if (value && typeof value === 'object' && k2 in value) {
           value = value[k2];
