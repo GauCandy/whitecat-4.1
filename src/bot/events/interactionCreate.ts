@@ -6,6 +6,7 @@
 import { Interaction, MessageFlags } from 'discord.js';
 import { commands } from '../loadCommands';
 import { t } from '../../i18n';
+import { checkTermsAccepted } from '../middleware/termsCheck';
 
 export default {
   name: 'interactionCreate',
@@ -41,6 +42,15 @@ export default {
             flags: MessageFlags.Ephemeral,
           });
           return;
+        }
+      }
+
+      // Check terms acceptance (default: true, can be disabled with requireTerms: false)
+      const requiresTerms = command.requireTerms !== false;
+      if (requiresTerms) {
+        const termsAccepted = await checkTermsAccepted(interaction, locale);
+        if (!termsAccepted) {
+          return; // Terms embed already sent by middleware
         }
       }
 

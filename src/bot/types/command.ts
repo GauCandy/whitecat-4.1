@@ -19,6 +19,7 @@ export interface Command {
   cooldown?: number; // Cooldown in seconds
   ownerOnly?: boolean; // Only bot owner can use
   guildOnly?: boolean; // Can only be used in guilds
+  requireTerms?: boolean; // Require terms acceptance (default: true)
 }
 
 export interface CommandCategory {
