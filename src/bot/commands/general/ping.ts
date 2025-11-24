@@ -23,14 +23,14 @@ const command: Command = {
     const sent = Date.now();
 
     await interaction.reply({
-      content: t('commands.ping.reply', { latency: '...' }, locale as any),
+      content: t('general.ping.reply', { latency: '...' }, locale as any),
     });
 
     const latency = Date.now() - sent;
     const apiLatency = Math.round(interaction.client.ws.ping);
 
     await interaction.editReply(
-      t('commands.ping.reply', { latency: String(latency) }, locale as any) +
+      t('general.ping.reply', { latency: String(latency) }, locale as any) +
       `\nAPI: ${apiLatency}ms`
     );
   },
