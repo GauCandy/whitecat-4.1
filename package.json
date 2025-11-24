@@ -4,14 +4,18 @@
   "description": "WhiteCat Discord Bot with Economy, Giveaways, and Web Dashboard",
   "scripts": {
     "build": "tsc",
+    "dev": "concurrently -n \"BOT,WEB\" -c \"cyan,magenta\" \"npm run dev:bot\" \"npm run dev:web\"",
+    "dev:bot": "ts-node src/bot/index.ts",
+    "dev:web": "ts-node src/web/index.ts",
     "start": "node dist/index.js",
-    "dev": "ts-node src/index.ts",
-    "deploy": "ts-node src/bot/deploy-commands.ts",
-    "deploy:clear": "ts-node src/bot/deploy-clear.ts",
+    "start:bot": "node dist/bot/index.js",
+    "start:web": "node dist/web/index.js",
+    "deploy": "npm run build && node dist/bot/deploy-commands.js",
+    "deploy:clear": "npm run build && node dist/bot/deploy-clear.js",
     "db:init": "ts-node src/db/init.ts",
+    "db:reset": "ts-node src/db/reset.ts",
     "db:drop": "ts-node src/db/drop.ts",
-    "db:clear": "ts-node src/db/clear.ts",
-    "db:reset": "ts-node src/db/reset.ts"
+    "db:clear": "ts-node src/db/clear.ts"
   },
   "dependencies": {
     "discord.js": "^14.25.1",
@@ -21,6 +25,7 @@
   "devDependencies": {
     "@types/node": "^24.10.1",
     "@types/pg": "^8.15.6",
+    "concurrently": "^9.2.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   },

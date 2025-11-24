@@ -63,10 +63,14 @@ async function sendTermsEmbed(
   locale: string
 ): Promise<void> {
   try {
+    console.log('\x1b[36m[Terms] Building OAuth2 URL...\x1b[0m');
+
     // Build OAuth2 authorization URL
     const oauthUrl = buildOAuth2URL();
+    console.log(`\x1b[36m[Terms] OAuth URL: ${oauthUrl}\x1b[0m`);
 
     // Create embed
+    console.log('\x1b[36m[Terms] Creating embed...\x1b[0m');
     const embed = new EmbedBuilder()
       .setColor(0xFF6B6B)
       .setTitle(t('oauth.terms_title', {}, locale as any))
@@ -75,6 +79,7 @@ async function sendTermsEmbed(
       .setTimestamp();
 
     // Create button
+    console.log('\x1b[36m[Terms] Creating button...\x1b[0m');
     const button = new ButtonBuilder()
       .setLabel(t('oauth.authorize_button', {}, locale as any))
       .setStyle(ButtonStyle.Link)
@@ -83,18 +88,28 @@ async function sendTermsEmbed(
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(button);
 
     // Send embed with button
+    console.log('\x1b[36m[Terms] Sending embed to Discord...\x1b[0m');
     await interaction.reply({
       embeds: [embed],
       components: [row],
       flags: MessageFlags.Ephemeral,
     });
+
+    console.log('\x1b[32m[Terms] ✓ Embed sent successfully!\x1b[0m');
   } catch (error) {
-    console.error('\x1b[31m❌ Error sending terms embed:\x1b[0m', error);
+    console.error('\x1b[31m❌ Error sending terms embed:\x1b[0m');
+    console.error('\x1b[31m   Error type:\x1b[0m', error instanceof Error ? error.constructor.name : typeof error);
+    console.error('\x1b[31m   Error message:\x1b[0m', error instanceof Error ? error.message : String(error));
+    console.error('\x1b[31m   Stack trace:\x1b[0m', error instanceof Error ? error.stack : 'No stack trace');
 
     // Fallback to simple message
-    await interaction.reply({
-      content: t('oauth.terms_required', {}, locale as any),
-      flags: MessageFlags.Ephemeral,
-    });
+    try {
+      await interaction.reply({
+        content: t('oauth.terms_required', {}, locale as any),
+        flags: MessageFlags.Ephemeral,
+      });
+    } catch (replyError) {
+      console.error('\x1b[31m❌ Failed to send fallback message:\x1b[0m', replyError);
+    }
   }
 }
