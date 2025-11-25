@@ -6,7 +6,39 @@
 import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import { Command } from '../../types/command';
 import { fetchNekoGif, EXPRESSION_ACTIONS } from '../../utils/nekobest';
-import { t } from '../../../i18n';
+import { t, getAllLocalizations, locales } from '../../../i18n';
+
+/**
+ * Get a random message from array or return string
+ */
+function getRandomMessage(key: string, replacements: Record<string, string>, locale: string): string {
+  const translations = (locales as any)[locale] || (locales as any)['vi'];
+  const keys = key.split('.');
+  let value: any = translations;
+
+  for (const k of keys) {
+    if (value && typeof value === 'object' && k in value) {
+      value = value[k];
+    } else {
+      return t(key, replacements, locale as any);
+    }
+  }
+
+  // If message is an array, pick random one
+  if (Array.isArray(value)) {
+    const randomIndex = Math.floor(Math.random() * value.length);
+    let message = value[randomIndex];
+
+    // Replace placeholders
+    for (const [placeholder, replacement] of Object.entries(replacements)) {
+      message = message.replace(new RegExp(`\\{${placeholder}\\}`, 'g'), replacement);
+    }
+
+    return message;
+  }
+
+  return t(key, replacements, locale as any);
+}
 
 // Color palette for different emotions
 const EMOTION_COLORS: Record<string, number> = {
@@ -40,9 +72,9 @@ const expressionCommands: Command[] = EXPRESSION_ACTIONS.map(action => ({
   data: new SlashCommandBuilder()
     .setName(action)
     .setDescription(t(`commands.fun.${action}.description`, {}, 'en-US'))
-    .setDescriptionLocalizations({
-      vi: t(`commands.fun.${action}.description`, {}, 'vi'),
-    }),
+    .setDescriptionLocalizations(
+      getAllLocalizations(`commands.fun.${action}.description`)
+    ),
 
   async execute({ interaction, locale }) {
     try {
@@ -50,11 +82,15 @@ const expressionCommands: Command[] = EXPRESSION_ACTIONS.map(action => ({
 
       const gifUrl = await fetchNekoGif(action);
 
+      const message = getRandomMessage(
+        `commands.fun.${action}.message`,
+        { user: interaction.user.username },
+        locale || 'vi'
+      );
+
       const embed = new EmbedBuilder()
         .setColor(EMOTION_COLORS[action] || 0x3498DB)
-        .setDescription(
-          t(`commands.fun.${action}.message`, { user: interaction.user.username }, locale as any)
-        )
+        .setDescription(message)
         .setImage(gifUrl)
         .setFooter({ text: 'Powered by nekos.best' });
 

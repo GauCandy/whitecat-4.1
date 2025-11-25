@@ -5,18 +5,13 @@
 
 import { SlashCommandBuilder } from 'discord.js';
 import { Command } from '../../types/command';
-import { t } from '../../../i18n';
+import { t, getAllLocalizations } from '../../../i18n';
 
 const command: Command = {
   data: new SlashCommandBuilder()
     .setName('ping')
-    .setDescription('Check bot latency')
-    // Add Vietnamese description
-    .setDescriptionLocalizations({
-      vi: 'Kiểm tra độ trễ của bot',
-      'en-US': 'Check bot latency',
-      'en-GB': 'Check bot latency',
-    }),
+    .setDescription(t('general.ping.description', {}, 'en-US'))
+    .setDescriptionLocalizations(getAllLocalizations('general.ping.description')),
 
   async execute({ interaction, locale }) {
     // Reply immediately to avoid timeout

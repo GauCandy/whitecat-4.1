@@ -127,6 +127,29 @@ export function getSupportedLocales(): Locale[] {
   return Object.keys(locales) as Locale[];
 }
 
+/**
+ * Get all localizations for a translation key
+ * Useful for Discord command description localizations
+ * @param key Translation key
+ * @param replacements Optional replacements
+ * @returns Object with all locale translations
+ */
+export function getAllLocalizations(
+  key: TranslationKey,
+  replacements?: Record<string, string | number>
+): Record<string, string> {
+  const result: Record<string, string> = {};
+
+  // Get unique locale codes (exclude aliases)
+  const uniqueLocales = ['vi', 'en-US'] as const;
+
+  for (const locale of uniqueLocales) {
+    result[locale] = t(key, replacements, locale);
+  }
+
+  return result;
+}
+
 // Export default
 export default {
   init,
@@ -136,5 +159,6 @@ export default {
   setLocale,
   isLocaleSupported,
   getSupportedLocales,
+  getAllLocalizations,
   locales,
 };

@@ -6,7 +6,39 @@
 import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import { Command } from '../../types/command';
 import { fetchNekoGif, INTERACTION_ACTIONS } from '../../utils/nekobest';
-import { t } from '../../../i18n';
+import { t, getAllLocalizations, locales } from '../../../i18n';
+
+/**
+ * Get a random message from array or return string
+ */
+function getRandomMessage(key: string, replacements: Record<string, string>, locale: string): string {
+  const translations = (locales as any)[locale] || (locales as any)['vi'];
+  const keys = key.split('.');
+  let value: any = translations;
+
+  for (const k of keys) {
+    if (value && typeof value === 'object' && k in value) {
+      value = value[k];
+    } else {
+      return t(key, replacements, locale as any);
+    }
+  }
+
+  // If message is an array, pick random one
+  if (Array.isArray(value)) {
+    const randomIndex = Math.floor(Math.random() * value.length);
+    let message = value[randomIndex];
+
+    // Replace placeholders
+    for (const [placeholder, replacement] of Object.entries(replacements)) {
+      message = message.replace(new RegExp(`\\{${placeholder}\\}`, 'g'), replacement);
+    }
+
+    return message;
+  }
+
+  return t(key, replacements, locale as any);
+}
 
 // Color palette for different interactions
 const INTERACTION_COLORS: Record<string, number> = {
@@ -35,49 +67,74 @@ const interactionCommands: Command[] = INTERACTION_ACTIONS.map(action => ({
   data: new SlashCommandBuilder()
     .setName(action)
     .setDescription(t(`commands.fun.${action}.description`, {}, 'en-US'))
-    .setDescriptionLocalizations({
-      vi: t(`commands.fun.${action}.description`, {}, 'vi'),
-    })
+    .setDescriptionLocalizations(
+      getAllLocalizations(`commands.fun.${action}.description`)
+    )
     .addUserOption(option =>
       option
         .setName('user')
-        .setDescription('The user to interact with')
-        .setDescriptionLocalizations({ vi: 'Người bạn muốn tương tác' })
+        .setDescription(t('commands.fun.user_option', {}, 'en-US'))
+        .setDescriptionLocalizations(getAllLocalizations('commands.fun.user_option'))
         .setRequired(true)
     ),
 
   async execute({ interaction, locale }) {
     try {
+      const targetUser = interaction.options.getUser('user', true);
+      const currentLocale = locale || 'vi';
+
+      // Case 1: Self-interaction (REJECT - ephemeral, no GIF)
+      if (targetUser.id === interaction.user.id) {
+        const message = getRandomMessage(
+          `commands.fun.${action}.self`,
+          { user: interaction.user.username },
+          currentLocale
+        );
+
+        await interaction.reply({
+          content: message,
+          ephemeral: true,
+        });
+        return;
+      }
+
+      // Case 2: Current bot interaction (special response with GIF)
+      if (targetUser.id === interaction.client.user.id) {
+        await interaction.deferReply();
+
+        const gifUrl = await fetchNekoGif(action);
+        const message = getRandomMessage(
+          `commands.fun.${action}.bot`,
+          { user: interaction.user.username },
+          currentLocale
+        );
+
+        const embed = new EmbedBuilder()
+          .setColor(INTERACTION_COLORS[action] || 0x3498DB)
+          .setDescription(message)
+          .setImage(gifUrl)
+          .setFooter({ text: 'Powered by nekos.best' });
+
+        await interaction.editReply({ embeds: [embed] });
+        return;
+      }
+
+      // Case 3: Normal interaction (other users and other bots)
       await interaction.deferReply();
 
-      const targetUser = interaction.options.getUser('user', true);
-
-      // Prevent self-interaction
-      if (targetUser.id === interaction.user.id) {
-        await interaction.editReply({
-          content: t('commands.fun.no_self_interaction', {}, locale as any),
-        });
-        return;
-      }
-
-      // Prevent bot interaction
-      if (targetUser.bot) {
-        await interaction.editReply({
-          content: t('commands.fun.no_bot_interaction', {}, locale as any),
-        });
-        return;
-      }
-
       const gifUrl = await fetchNekoGif(action);
+      const message = getRandomMessage(
+        `commands.fun.${action}.message`,
+        {
+          user: interaction.user.username,
+          target: targetUser.username,
+        },
+        currentLocale
+      );
 
       const embed = new EmbedBuilder()
         .setColor(INTERACTION_COLORS[action] || 0x3498DB)
-        .setDescription(
-          t(`commands.fun.${action}.message`, {
-            user: interaction.user.username,
-            target: targetUser.username,
-          }, locale as any)
-        )
+        .setDescription(message)
         .setImage(gifUrl)
         .setFooter({ text: 'Powered by nekos.best' });
 

@@ -3,175 +3,518 @@
  */
 
 export default {
-  error: '❌ Could not fetch GIF. Please try again later!',
-  no_self_interaction: '❌ You cannot interact with yourself!',
-  no_bot_interaction: '❌ You cannot interact with bots!',
+  error: "❌ Could not fetch GIF. Please try again later!",
+  user_option: "The user to interact with",
 
-  // Expression commands
-  sleep: {
-    description: 'Show that you are sleepy',
-    message: '💤 **{user}** is feeling sleepy...',
-  },
-  wave: {
-    description: 'Wave hello',
-    message: '👋 **{user}** is waving!',
-  },
-  smile: {
-    description: 'Smile',
-    message: '😊 **{user}** is smiling!',
-  },
-  dance: {
-    description: 'Dance',
-    message: '💃 **{user}** is dancing!',
-  },
-  happy: {
-    description: 'Show happiness',
-    message: '😄 **{user}** is happy!',
-  },
   angry: {
-    description: 'Show anger',
-    message: '😠 **{user}** is angry!',
+    description: "Get angry",
+    message: [
+      "{user} is angry! 😠",
+      "{user} is super mad! 😡",
+      "{user} is furious! 💢"
+    ],
   },
-  cry: {
-    description: 'Cry',
-    message: '😢 **{user}** is crying...',
-  },
-  laugh: {
-    description: 'Laugh',
-    message: '😂 **{user}** is laughing!',
-  },
-  blush: {
-    description: 'Blush',
-    message: '😳 **{user}** is blushing...',
-  },
-  wink: {
-    description: 'Wink',
-    message: '😉 **{user}** winks!',
-  },
-  smug: {
-    description: 'Feel smug',
-    message: '😏 **{user}** is feeling smug!',
-  },
-  think: {
-    description: 'Think',
-    message: '🤔 **{user}** is thinking...',
-  },
-  pout: {
-    description: 'Pout',
-    message: '😤 **{user}** is pouting!',
-  },
-  shrug: {
-    description: 'Shrug',
-    message: '🤷 **{user}** shrugs!',
-  },
-  yawn: {
-    description: 'Yawn',
-    message: '🥱 **{user}** is yawning!',
-  },
-  bored: {
-    description: 'Show boredom',
-    message: '😑 **{user}** is bored!',
-  },
-  nod: {
-    description: 'Nod in agreement',
-    message: '✅ **{user}** nods in agreement!',
-  },
-  nope: {
-    description: 'Shake head no',
-    message: '❌ **{user}** shakes their head no!',
-  },
-  facepalm: {
-    description: 'Facepalm',
-    message: '🤦 **{user}** facepalms!',
-  },
-  stare: {
-    description: 'Stare',
-    message: '👀 **{user}** is staring...',
-  },
-  lurk: {
-    description: 'Lurk',
-    message: '🕵️ **{user}** is lurking!',
-  },
-  run: {
-    description: 'Run',
-    message: '🏃 **{user}** is running!',
-  },
-  thumbsup: {
-    description: 'Give a thumbs up',
-    message: '👍 **{user}** gives a thumbs up!',
-  },
-
-  // Interaction commands
-  hug: {
-    description: 'Hug another user',
-    message: '🤗 **{user}** hugs **{target}**!',
-  },
-  pat: {
-    description: 'Pat another user',
-    message: '😊 **{user}** pats **{target}**!',
-  },
-  kiss: {
-    description: 'Kiss another user',
-    message: '💋 **{user}** kisses **{target}**!',
-  },
-  cuddle: {
-    description: 'Cuddle another user',
-    message: '🥰 **{user}** cuddles **{target}**!',
-  },
-  poke: {
-    description: 'Poke another user',
-    message: '👉 **{user}** pokes **{target}**!',
-  },
-  slap: {
-    description: 'Slap another user',
-    message: '✋ **{user}** slaps **{target}**!',
-  },
-  kick: {
-    description: 'Kick another user',
-    message: '🦵 **{user}** kicks **{target}**!',
+  baka: {
+    description: "Call someone baka (バカ)",
+    message: [
+      "{target} baka! バカ！😤",
+      "{target} is such an idiot~ 😳💢",
+      "{target}! I-It's not like I like you or anything, b-baka! 💢",
+      "{target}-baka! 😤",
+      "Tch, {target} you idiot... 😒",
+      "{target}-baka desu! ばか〜 (｡•ˇ‸ˇ•｡)",
+      "{target} you're so dumb! バカバカ！ 💢",
+      "Oi {target}, why are you so stupid! 😤"
+    ],
+    self: [
+      "I'm such an idiot... 😅💦",
+      "I'm such a baka! 🤦‍♂️",
+      "Watashi wa baka desu... 😔"
+    ],
+    bot: [
+      "How dare you call me baka, {user}!? 😤💢",
+      "I'm a baka, {user}? I'm trying my best here! 😢",
+      "{user}-baka! I'm not stupid! ヽ(｀Д´)ﾉ"
+    ],
   },
   bite: {
-    description: 'Bite another user',
-    message: '😬 **{user}** bites **{target}**!',
+    description: "Bite someone",
+    message: [
+      "{user} bites {target}! 🦷",
+      "{user} chomps on {target}! 😈",
+      "{user} gives {target} a little bite~ 🦷✨"
+    ],
+    self: [
+      "{user} tries to bite themselves... Ouch! 🦷",
+      "{user} bites their own hand... That hurts! 😭"
+    ],
+    bot: [
+      "{user} tries to bite me! Hey! 🦷",
+      "{user} wants to bite me! Don't! 😤"
+    ],
   },
-  tickle: {
-    description: 'Tickle another user',
-    message: '🤗 **{user}** tickles **{target}**!',
+  blush: {
+    description: "Blush",
+    message: [
+      "{user} is blushing! 😊",
+      "{user} blushes~ 😳",
+      "{user} is so shy! >//< 😊"
+    ],
+  },
+  bored: {
+    description: "Look bored",
+    message: [
+      "{user} is bored... 😑",
+      "{user} is so bored~ 😴",
+      "{user} finds this boring... =_="
+    ],
+  },
+  cry: {
+    description: "Cry",
+    message: [
+      "{user} is crying! 😭",
+      "{user} bursts into tears... 😢",
+      "{user} cries... 😭😭"
+    ],
+  },
+  cuddle: {
+    description: "Cuddle with someone",
+    message: [
+      "*cuddles {target}* 🤗",
+      "{user} snuggles with {target}! 💕",
+      "Cuddling {target}~ 🥰",
+      "{user} *cuddles {target} warmly* ⊂(´・ω・`⊂)"
+    ],
+    self: [
+      "{user} cuddles themselves... Feeling lonely? 🤗💦",
+      "{user} hugs themselves... Are you okay? Don't be sad! 😢",
+      "Why does {user} cuddle themselves? Everything alright? 🥺"
+    ],
+    bot: [
+      "{user} cuddles me! *purrs* So warm! 😻",
+      "{user} snuggles me! I love it~ 💕",
+      "Nyaa~ {user} cuddles me! *lies in lap* (=^･ω･^=) 🥰"
+    ],
+  },
+  dance: {
+    description: "Dance",
+    message: [
+      "{user} is dancing! 💃",
+      "{user} dances like crazy! 🕺",
+      "{user} is having a dance party! 💃✨"
+    ],
+  },
+  facepalm: {
+    description: "Facepalm",
+    message: [
+      "{user} facepalms... 🤦",
+      "{user} facepalms in disappointment... 🤦‍♂️",
+      "{user} facepalms so hard! 🤦"
+    ],
   },
   feed: {
-    description: 'Feed another user',
-    message: '🍽️ **{user}** feeds **{target}**!',
-  },
-  punch: {
-    description: 'Punch another user',
-    message: '👊 **{user}** punches **{target}**!',
-  },
-  shoot: {
-    description: 'Shoot another user',
-    message: '🔫 **{user}** shoots **{target}**!',
-  },
-  yeet: {
-    description: 'Yeet another user',
-    message: '🚀 **{user}** yeets **{target}**!',
-  },
-  highfive: {
-    description: 'High-five another user',
-    message: '✋ **{user}** high-fives **{target}**!',
-  },
-  handshake: {
-    description: 'Shake hands with another user',
-    message: '🤝 **{user}** shakes hands with **{target}**!',
+    description: "Feed someone",
+    message: [
+      "{user} feeds {target}! 🍔",
+      "{user} feeds {target} delicious food! 🍰",
+      "{user} gives {target} a tasty treat! 🍜"
+    ],
+    self: [
+      "{user} feeds themselves! 🍔",
+      "{user} eats alone... 😋"
+    ],
+    bot: [
+      "{user} feeds me! Yummy! 🍔",
+      "{user} gives me food! So delicious! 😋"
+    ],
   },
   handhold: {
-    description: 'Hold hands with another user',
-    message: '👫 **{user}** holds hands with **{target}**!',
+    description: "Hold hands with someone",
+    message: [
+      "{user} holds {target}'s hand! 🤝",
+      "{user} holds {target}'s hand tightly! 💑",
+      "{user} and {target} hold hands warmly! 🥰"
+    ],
+    self: [
+      "{user} holds their own hands... 🤝",
+      "{user} holds their own hand... Forever alone!"
+    ],
+    bot: [
+      "{user} holds my hand! 🤝",
+      "{user} holds my hand tightly! So warm! 💕"
+    ],
   },
-  peck: {
-    description: 'Peck another user',
-    message: '😘 **{user}** pecks **{target}**!',
+  handshake: {
+    description: "Shake hands with someone",
+    message: [
+      "{user} shakes hands with {target}! 🤝",
+      "{user} and {target} shake hands! 🤝✨",
+      "{user} gives {target} a friendly handshake! 😊"
+    ],
+    self: [
+      "{user} shakes their own hand? 🤝",
+      "{user} shakes hands with themselves... Weird! 😅"
+    ],
+    bot: [
+      "{user} shakes hands with me! 🤝",
+      "{user} gives me a handshake! Nice to meet you! 😊"
+    ],
+  },
+  happy: {
+    description: "Feel happy",
+    message: [
+      "{user} is happy! 😄",
+      "{user} is super happy! 🥰",
+      "{user} is filled with joy! ✨😊"
+    ],
+  },
+  highfive: {
+    description: "Give someone a high five",
+    message: [
+      "{user} high fives {target}! ✋",
+      "{user} gives {target} a high five! 🙌",
+      "{user} and {target} high five perfectly! ✨"
+    ],
+    self: [
+      "{user} high fives themselves! ✋",
+      "{user} high fives alone... Forever alone! 😢"
+    ],
+    bot: [
+      "{user} high fives me! ✋",
+      "{user} gives me a high five! Yeah! 🙌"
+    ],
+  },
+  hug: {
+    description: "Hug someone",
+    message: [
+      "*hugs {target}* 🤗",
+      "{user} gives {target} a warm hug! 💕",
+      "Hugging {target}~ 🥰",
+      "{user} *hugs {target} tightly* 🫂",
+      "{target}~ *hug hug* ⊂(・﹏・⊂)"
+    ],
+    self: [
+      "{user} hugs themselves... Are you lonely? 🤗💦",
+      "Why does {user} hug themselves? Are you okay? 😢",
+      "{user} has no one to hug... Don't be sad! 🥺"
+    ],
+    bot: [
+      "{user} hugs me! *hugs back* Thank you! 😻",
+      "{user} hugs me! *purrs* So warm! 💕",
+      "Nyaa~ {user} hugs me! I love it! (=^･ω･^=) 🤗"
+    ],
+  },
+  kick: {
+    description: "Kick someone",
+    message: [
+      "*kicks {target}* 👟",
+      "{user} kicks {target} away! 💥",
+      "Kicking {target}! 🦵",
+      "{user} *kicks {target} hard* Take that! ⚡👟",
+      "*kicks {target}* Go away! 💢"
+    ],
+    self: [
+      "{user} kicks themselves... Why would you do that? 👟💦",
+      "Hey {user}! Don't hurt yourself! 😭",
+      "{user} kicks themselves... That must hurt! 🤕"
+    ],
+    bot: [
+      "{user} kicks me!? Rude! 👟😤",
+      "Hey {user}! Don't kick me! 💢",
+      "*dodges* {user} can't catch me~ 😏"
+    ],
+  },
+  kiss: {
+    description: "Kiss someone",
+    message: [
+      "*kisses {target}* 💋",
+      "{user} kisses {target}! 😘",
+      "Kissing {target} gently~ 💕",
+      "{user} *smooches {target}* Mwah! 😚",
+      "{target}~ *kiss* >//< 💋✨"
+    ],
+    self: [
+      "{user} kisses themselves... Narcissist? 💋😅",
+      "Why does {user} kiss themselves? 🪞✨",
+      "{user} kisses the mirror... Self-love! 😂"
+    ],
+    bot: [
+      "{user} kisses me! I love it! 😻💕",
+      "*purrs* {user} kisses me! So happy~ (=^･ω･^=) 💋",
+      "Nyaa~ {user} kisses me! I like it! >//< 💕✨"
+    ],
+  },
+  laugh: {
+    description: "Laugh",
+    message: [
+      "{user} is laughing! 😂",
+      "{user} laughs like crazy! 🤣",
+      "{user} can't stop laughing! 😂😂"
+    ],
+  },
+  lurk: {
+    description: "Lurk in the shadows",
+    message: [
+      "{user} is lurking... 👀",
+      "{user} hides in the shadows... 🕵️",
+      "{user} sneakily observes... 👁️"
+    ],
+  },
+  nod: {
+    description: "Nod in agreement",
+    message: [
+      "{user} nods 👍",
+      "{user} agrees! ✅",
+      "{user} nods yes~ 👌"
+    ],
   },
   nom: {
-    description: 'Nom another user',
-    message: '😋 **{user}** noms **{target}**!',
+    description: "Eat something",
+    message: [
+      "{user} is eating! 😋",
+      "{user} nom nom nom! 🍽️",
+      "{user} enjoys their meal! 😋✨"
+    ],
+  },
+  nope: {
+    description: "Disagree",
+    message: [
+      "{user} says nope! 🙅",
+      "{user} disagrees! ❌",
+      "{user} refuses! 🙅‍♂️"
+    ],
+  },
+  pat: {
+    description: "Pat someone on the head",
+    message: [
+      "*pats {target}* 👋",
+      "{user} pats {target} gently! 🥰",
+      "Patting {target}~ ✨",
+      "{user} *pets {target}* Good! 💕",
+      "Pat pat {target}~ ( ´ ▽ ` ).。ｏ♡"
+    ],
+    self: [
+      "{user} pats themselves... Good job! 👋😊",
+      "{user} pats their own head... Self-praise? ✨",
+      "Oh {user}! Patting yourself? You did well! 🥰"
+    ],
+    bot: [
+      "{user} pats me~ *purrs* 👋",
+      "Pat pat from {user}! So nice! 🥰",
+      "*leans into {user}'s hand* More pats please! (=^･ω･^=)"
+    ],
+  },
+  peck: {
+    description: "Give someone a peck",
+    message: [
+      "*pecks {target}* 😘",
+      "{user} gives {target} a light kiss! 😚",
+      "Blowing {target} a kiss~ 💋✨",
+      "{user} *pecks {target}'s cheek* Mwah~ (づ ̄ ³ ̄)づ"
+    ],
+    self: [
+      "{user} blows themselves a kiss... 😘💦",
+      "{user} air kisses themselves! So lovely! 💋✨"
+    ],
+    bot: [
+      "{user} pecks me! So sweet~ 😻",
+      "{user} gives me a kiss! *purrs* I like it! (=^･ω･^=) 💕"
+    ],
+  },
+  poke: {
+    description: "Poke someone",
+    message: [
+      "*pokes {target}* 👉",
+      "{user} pokes {target} playfully! 👈",
+      "Poking {target}~ 👉👈",
+      "{user} *gently pokes {target}* (づ｡◕‿‿◕｡)づ"
+    ],
+    self: [
+      "{user} pokes themselves... Why? 👉😅",
+      "Hey {user}! Why poke yourself? 🤔"
+    ],
+    bot: [
+      "{user} pokes me! 👉",
+      "Hey {user}! Stop poking me! 😤",
+      "*pokes {user} back* Poke poke! 👉😏"
+    ],
+  },
+  pout: {
+    description: "Pout",
+    message: [
+      "{user} is pouting 😾",
+      "{user} pouts cutely~ 😤",
+      "{user} makes a pouty face... 😾"
+    ],
+  },
+  punch: {
+    description: "Punch someone",
+    message: [
+      "*punches {target}* 👊",
+      "{user} punches {target} hard! 💥",
+      "Take this, {target}! 🥊",
+      "{user} *punches {target}* POW! 👊💢",
+      "Ora ora ora! *punches {target}* ୧(๑•̀ㅁ•́๑)૭✧"
+    ],
+    self: [
+      "{user} punches themselves... Why would you do that? 👊💦",
+      "Hey {user}! Don't hurt yourself! 😭",
+      "{user} punches themselves... That must hurt! 🤕"
+    ],
+    bot: [
+      "Hey {user}! Don't punch me! 👊😤",
+      "{user} punches me!? Violence! 💢",
+      "*blocks* {user} can't hit me! 😏"
+    ],
+  },
+  run: {
+    description: "Run away",
+    message: [
+      "{user} is running! 🏃",
+      "{user} runs super fast! 💨",
+      "{user} runs like the wind! 🏃‍♂️💨"
+    ],
+  },
+  shoot: {
+    description: "Shoot",
+    message: [
+      "{user} shoots! 🔫",
+      "{user} fires away! 💥",
+      "{user} takes aim and shoots! 🎯"
+    ],
+  },
+  shrug: {
+    description: "Shrug",
+    message: [
+      "{user} shrugs 🤷",
+      "{user} doesn't care~ ¯\\_(ツ)_/¯",
+      "{user} shrugs indifferently... 🤷‍♂️"
+    ],
+  },
+  slap: {
+    description: "Slap someone",
+    message: [
+      "*slaps {target}* ✋",
+      "{user} slaps {target} hard! 💥",
+      "Take that, {target}! 😤",
+      "{user} *slaps {target}* PAK! ✋💢",
+      "Slapping {target}! (╯°□°)╯"
+    ],
+    self: [
+      "{user} slaps themselves... Wake up! ✋",
+      "Hey {user}! Why slap yourself? 😵💫",
+      "{user} slaps themselves awake... That must hurt! 🤕"
+    ],
+    bot: [
+      "Hey {user}! Don't slap me! ✋😭",
+      "{user} slaps me!? That hurts! 😭💢",
+      "*dodges* {user} missed~ 😏"
+    ],
+  },
+  sleep: {
+    description: "Go to sleep",
+    message: [
+      "{user} is sleeping... 😴",
+      "{user} fell asleep~ 💤",
+      "{user} is fast asleep... zzZ"
+    ],
+  },
+  smile: {
+    description: "Smile",
+    message: [
+      "{user} smiles! 😊",
+      "{user} smiles brightly! ☺️",
+      "{user} gives a warm smile! 😌"
+    ],
+  },
+  smug: {
+    description: "Look smug",
+    message: [
+      "{user} looks smug 😏",
+      "{user} smirks smugly~ 😎",
+      "{user} has a smug grin 😏"
+    ],
+  },
+  stare: {
+    description: "Stare intensely",
+    message: [
+      "{user} is staring... 👁️",
+      "{user} stares intensely... 👀",
+      "{user} stares without blinking... ಠ_ಠ"
+    ],
+  },
+  think: {
+    description: "Think deeply",
+    message: [
+      "{user} is thinking... 🤔",
+      "{user} ponders... 💭",
+      "{user} is deep in thought... 🤔💭"
+    ],
+  },
+  thumbsup: {
+    description: "Give a thumbs up",
+    message: [
+      "{user} gives a thumbs up! 👍",
+      "{user} likes this! 👍✨",
+      "{user} approves! 👍😎"
+    ],
+  },
+  tickle: {
+    description: "Tickle someone",
+    message: [
+      "*tickles {target}* 🤗",
+      "{user} tickles {target}! 😂",
+      "Tickling {target}! 🤣",
+      "{user} *tickles {target} mercilessly!* Hehe~ (｡•̀ᴗ-)✧"
+    ],
+    self: [
+      "{user} tickles themselves... Why? 🤗💦",
+      "{user} self-tickles... Does it work? 😅"
+    ],
+    bot: [
+      "{user} tickles me! Haha! It tickles! 😂",
+      "{user} tickles me! *rolling around* Stop! 🤣🤣",
+      "Nyaa~ {user} stop tickling me! So ticklish! (=^･ェ･^=) 😂"
+    ],
+  },
+  wave: {
+    description: "Wave hello",
+    message: [
+      "{user} waves! 👋",
+      "{user} waves hello! 👋✨",
+      "{user} greets everyone! 👋😊"
+    ],
+  },
+  wink: {
+    description: "Wink",
+    message: [
+      "{user} winks! 😉",
+      "{user} winks playfully~ 😉",
+      "{user} gives a cheeky wink! 😉✨"
+    ],
+  },
+  yawn: {
+    description: "Yawn",
+    message: [
+      "{user} yawns... 🥱",
+      "{user} yawns widely... 😮‍💨",
+      "{user} is so sleepy... 🥱💤"
+    ],
+  },
+  yeet: {
+    description: "Yeet someone",
+    message: [
+      "{user} yeets {target}! 🚀",
+      "{user} throws {target} into space! 💨",
+      "{user} yeets {target} far away! 🌌"
+    ],
+    self: [
+      "{user} yeets themselves into space! 🚀",
+      "{user} self-yeets! Wheee! 🌠"
+    ],
+    bot: [
+      "{user} yeets me! 🚀",
+      "{user} throws me away! Oh no! 😱"
+    ],
   },
 };
