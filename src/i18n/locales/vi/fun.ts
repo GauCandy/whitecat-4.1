@@ -9,33 +9,33 @@ export default {
   angry: {
     description: "Tức giận",
     message: [
-      "{user} đang rất giận! 😠",
-      "{user} giận dữ quá đi! 😤",
-      "{user} nổi giận rồi! 💢",
-      "{user} *tức giận* Grrrr! 😤💢",
-      "{user} giận đến toét mói! ୧(๑•̀ㅁ•́๑)૭"
+      "{user} giận rồi nha! 😠",
+      "{user} giận lắm đó! 😤",
+      "{user} tức quá đi! 💢",
+      "{user} *tức giận* Hmph! 😤",
+      "{user} giận đến nổi điên luôn! ୧(๑•̀ㅁ•́๑)૭"
     ],
   },
   baka: {
     description: "Gọi ai đó là baka (バカ)",
     message: [
-      "{target} baka! バカ！😤",
-      "{target} là đồ ngốc~ 😳💢",
-      "{target}! Không phải là tớ thích cậu hay gì đâu nhé, b-baka! 💢",
-      "{target}-baka! 😤",
-      "Tch, {target} ngốc thật... 😒",
-      "{target}-baka desu! ばか〜 (｡•ˇ‸ˇ•｡)",
-      "{target} hơi bị ngu á! バカバカ！ 💢",
-      "Ơ kìa {target}, sao ngu thế! 😤"
+      "{user} gọi {target} là baka! バカ！😤",
+      "{user} nói {target} là đồ ngốc~ 😳💢",
+      "{user} chỉ {target}: Không phải là mình thích cậu hay gì đâu nhé, b-baka! 💢",
+      "{user}: {target}-baka! 😤",
+      "{user}: Tch, {target} ngốc thật... 😒",
+      "{user} bảo {target} baka desu! ばか〜 (｡•ˇ‸ˇ•｡)",
+      "{user}: {target} hơi bị ngu á! バカバカ！ 💢",
+      "{user}: Ơ kìa {target}, sao ngu thế! 😤"
     ],
     self: [
-      "Ơ, tớ ngốc quá... 😅",
-      "Tớ baka quá đi! Trời ơi! 🤦‍♂️",
-      "Watashi wa baka desu... 😔"
+      "{user}: Ơ, mình ngốc quá... 😅",
+      "{user}: Mình baka quá đi! Trời ơi! 🤦",
+      "{user}: Watashi wa baka desu... 😔"
     ],
     bot: [
       "Ủa {user} dám gọi tớ là baka hả!? 😤💢",
-      "Bot tớ baka sao {user}? Tớ cố gắng lắm rồi đó! 😢",
+      "{user} nói tớ baka sao? Tớ cố gắng lắm rồi đó! 😢",
       "{user}-baka! Tớ đâu có ngốc đâu! ヽ(｀Д´)ﾉ"
     ],
   },
@@ -43,85 +43,90 @@ export default {
     description: "Cắn ai đó",
     message: [
       "{user} cắn {target}! 😤",
-      "{user} cắn nhẹ {target}! 😼",
-      "{user} cắn {target} nhẹ nhàng~ 😊",
-      "{user} *ahm ahm* cắn {target}! Rawr~ 😼",
-      "{user} cắn {target}! Nom nom~ >:3"
+      "{user} cắn nhẹ {target}~ 😼",
+      "{user} cắn {target} một cái nhẹ thôi! 😊",
+      "{user} *ahm* cắn {target}! Rawr~ 😼",
+      "{user} cắn {target} luôn! Nom nom~ >:3",
+      "{user} *cắn má {target}* Hehe~ 😊"
     ],
     self: [
       "{user} cố cắn chính mình... Au! 😅",
       "{user} tự cắn mình... Đau chết! 😭"
     ],
     bot: [
-      "{user} cố cắn tớ! Này này! 😤",
-      "{user} định cắn tớ à! Đừng có! >:<",
-      "{user} cắn tớ! Ơi đau! Tớ đâu phải đồ ăn! 😭"
+      "{user} cố cắn tớ! Này này đừng có! 😤",
+      "{user} định cắn tớ à! Đừng cắn! >:<",
+      "{user} cắn tớ luôn! Ơi đau! Tớ đâu phải đồ ăn! 😭"
     ],
   },
   blush: {
     description: "Đỏ mặt",
     message: [
-      "{user} đang đỏ mặt! 😊",
-      "{user} đỏ mặt lên rồi~ 😳",
-      "{user} ngại quá! >//< 😊",
+      "{user} đỏ mặt rồi! 😊",
+      "{user} đỏ mặt lên á~ 😳",
+      "{user} ngại ghê! >//< 😊",
       "{user} *đỏ mặt như tôm luộc* >///<",
-      "{user} xấu hổ quá! Mặt đỏ rồi~ (⁄ ⁄>⁄ω⁄<⁄ ⁄)"
+      "{user} xấu hổ quá! Mặt đỏ hết cả rồi~ (⁄ ⁄>⁄ω⁄<⁄ ⁄)"
     ],
   },
   bored: {
     description: "Cảm thấy chán",
     message: [
-      "{user} đang buồn chán... 😑",
-      "{user} chán quá~ 😴",
-      "{user} buồn tẻ ghê... =_="
+      "{user} buồn chán quá... 😑",
+      "{user} chán ghê~ 😴",
+      "{user} buồn tẻ quá đi... =_=",
+      "{user} *chán nản* Haizz... 😑",
+      "{user} chán không biết làm gì luôn... 😴"
     ],
   },
   cry: {
     description: "Khóc",
     message: [
       "{user} đang khóc! 😭",
-      "{user} òa khóc... 😢",
+      "{user} òa khóc luôn... 😢",
       "{user} khóc hu hu... 😭😭",
       "{user} *khóc ướt gối* Hu hu... (ಥ﹏ಥ)",
-      "{user} khóc sướt mướt~ Ai dỗ đi! 😭✨"
+      "{user} khóc sướt mướt! Ai dỗ đi~ 😭✨"
     ],
   },
   cuddle: {
     description: "Ôm ấp ai đó",
     message: [
       "{user} ôm ấp {target}~ 🤗",
-      "{user} ôm chầm {target}! 🥰",
-      "{user} ôm ấp {target} thật ấm áp~ 🤗",
-      "{user} *ôm ấp {target} ấm áp* ⊂(´・ω・`⊂)",
-      "{user} ôm {target} không thả ra! Dễ thương quá~ 🥰✨"
+      "{user} ôm chầm lấy {target}! 🥰",
+      "{user} ôm ấp {target} ấm áp quá~ 🤗",
+      "{user} *ôm ấp {target}* ⊂(´・ω・`⊂)",
+      "{user} ôm {target} không thả ra! Dễ thương ghê~ 🥰✨",
+      "{user} ôm {target} thật chặt! Ấm lắm nè~ 🤗💕"
     ],
     self: [
       "{user} tự ôm bản thân... Ủa cô đơn à? 🤗",
       "{user} ôm lấy mình... Bạn ổn chứ? 😢",
-      "Sao {user} lại tự ôm ấp? Là sao ta? 🥺"
+      "{user} tự ôm ấp... Là sao ta? 🥺"
     ],
     bot: [
       "{user} ôm ấp tớ! Ấm áp ghê~ 🤗",
       "{user} ôm tớ! Cảm ơn nha~ 🥰",
-      "{user} ôm tớ nè! *ôm lại* 🫂"
+      "{user} ôm tớ nè! *ôm lại* Dễ thương quá~ 🫂"
     ],
   },
   dance: {
     description: "Nhảy múa",
     message: [
-      "{user} đang nhảy múa! 💃",
+      "{user} đang nhảy đây! 💃",
       "{user} nhảy điên cuồng! 🕺",
-      "{user} nhảy cực sung! 💃✨",
+      "{user} nhảy cực sung nè! 💃✨",
       "{user} *nhảy như không có ngày mai* ♪(┌・。・)┌",
-      "{user} quẩy tung nóc! Dance dance~ 🕺💫"
+      "{user} quẩy tung nóc luôn! Dance dance~ 🕺💫"
     ],
   },
   facepalm: {
     description: "Úp mặt",
     message: [
-      "{user} úp mặt... 🤦",
-      "{user} úp mặt thất vọng... 🤦‍♂️",
-      "{user} facepalm cực mạnh! 🤦"
+      "{user} úp mặt luôn... 🤦",
+      "{user} úp mặt thất vọng... 🤦",
+      "{user} facepalm cực mạnh! 🤦",
+      "{user} *úp mặt* Haizz... 🤦‍♀️"
     ],
   },
   feed: {
@@ -129,9 +134,10 @@ export default {
     message: [
       "{user} cho {target} ăn! 🍔",
       "{user} đút thức ăn cho {target}! 🍰",
-      "{user} cho {target} ăn cực ngon! 🍜",
+      "{user} cho {target} ăn nè! 🍜",
       "{user} *đút thức ăn vào miệng {target}* Ăn đi~ 😋",
-      "{user} cho {target} ăn! Ngon không~ 🍽️✨"
+      "{user} cho {target} ăn! Ngon không nè~ 🍽️✨",
+      "{user} đút đồ ăn cho {target}! Yummy~ 🍰💕"
     ],
     self: [
       "{user} tự cho mình ăn! 🍔",
@@ -140,8 +146,8 @@ export default {
     ],
     bot: [
       "{user} cho tớ ăn! Ngon quá! 🍔",
-      "{user} đút cho tớ ăn! Yummy! 😋",
-      "{user} cho tớ ăn nè! *nom nom* Ngon lắm~ 🍜🥰"
+      "{user} đút cho tớ ăn! Yummy lắm~ 😋",
+      "{user} cho tớ ăn nè! *nom nom* Ngon ghê~ 🍜🥰"
     ],
   },
   handhold: {
@@ -149,18 +155,19 @@ export default {
     message: [
       "{user} nắm tay {target}! 🤝",
       "{user} nắm chặt tay {target}! 👫",
-      "{user} nắm tay {target} thật ấm! 🥰",
-      "{user} *nắm tay {target} không thả* Ấm áp quá~ 💕",
-      "{user} nắm tay {target}~ Đi cùng nhau nha! (づ ̄ ³ ̄)づ"
+      "{user} nắm tay {target} ấm lắm! 🥰",
+      "{user} *nắm tay {target} không thả* Ấm quá~ 💕",
+      "{user} nắm tay {target}~ Đi cùng nhau nha! (づ ̄ ³ ̄)づ",
+      "{user} nắm chặt tay {target}! Đừng thả ra nha~ 👫💕"
     ],
     self: [
       "{user} nắm tay chính mình... 🤝",
-      "{user} tự nắm tay bản thân... Cô đơn ghê!",
-      "{user} nắm tay... chính mình? Forever alone! 😢"
+      "{user} tự nắm tay... Cô đơn ghê!",
+      "{user} nắm tay mình... Forever alone! 😢"
     ],
     bot: [
       "{user} nắm tay tớ! 🤝",
-      "{user} nắm chặt tay tớ! Ấm áp nha~ 😊",
+      "{user} nắm chặt tay tớ! Ấm nha~ 😊",
       "{user} nắm tay tớ nè! *nắm lại* Đi thôi~ 🥰"
     ],
   },
@@ -169,25 +176,27 @@ export default {
     message: [
       "{user} bắt tay với {target}! 🤝",
       "{user} và {target} bắt tay! 🤝✨",
-      "{user} bắt tay thân thiện với {target}! 😊"
+      "{user} bắt tay thân thiện với {target}! 😊",
+      "{user} giơ tay bắt tay {target}! Nice to meet you~ 🤝"
     ],
     self: [
       "{user} bắt tay với chính mình? 🤝",
       "{user} tự bắt tay... Lạ thật! 😅"
     ],
     bot: [
-      "{user} bắt tay với tôi! 🤝",
-      "{user} bắt tay! Nice to meet you! 😊"
+      "{user} bắt tay với tớ! 🤝",
+      "{user} bắt tay với tớ! Nice to meet you~ 😊",
+      "{user} và tớ bắt tay! Vui lắm nè~ 🤝✨"
     ],
   },
   happy: {
     description: "Cảm thấy vui",
     message: [
-      "{user} đang vui vẻ! 😄",
-      "{user} vui quá trời! 🥰",
-      "{user} hạnh phúc lắm! ✨😊",
+      "{user} vui quá đi! 😄",
+      "{user} vui lắm nè! 🥰",
+      "{user} hạnh phúc ghê! ✨😊",
       "{user} *vui như được mùa* Yay yay~ (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧",
-      "{user} happy quá đi! Hehe~ 😊💫"
+      "{user} happy quá trời! Hehe~ 😊💫"
     ],
   },
   highfive: {
@@ -197,17 +206,18 @@ export default {
       "{user} high five {target}! 🙌",
       "{user} và {target} vỗ tay ăn ý! ✨",
       "{user} *PAK!* vỗ tay với {target}! Nice~ ✋😎",
-      "{user} giơ tay vỗ {target}! High five nào~ 🙌✨"
+      "{user} giơ tay vỗ {target}! High five nào~ 🙌✨",
+      "{user} vỗ tay với {target}! Đập tay đi~ ✋💫"
     ],
     self: [
       "{user} tự vỗ tay! ✋",
       "{user} vỗ tay một mình... Forever alone! 😢",
-      "{user} high five... chính mình? Cô đơn quá! 🥺"
+      "{user} high five chính mình? Cô đơn quá! 🥺"
     ],
     bot: [
       "{user} vỗ tay với tớ! ✋",
       "{user} high five tớ! Yeah! 🙌",
-      "{user} *PAK!* Vỗ đau tay! Nhưng nice~ 😊✨"
+      "{user} *PAK!* Vỗ đau tay! Nhưng vui nha~ 😊✨"
     ],
   },
   hug: {
@@ -216,20 +226,20 @@ export default {
       "{user} ôm {target}~ 🤗",
       "{user} ôm chặt {target}! 🥰",
       "{user} ôm {target} thật ấm! 🤗",
-      "{user} *ôm {target} ấm áp* 🫂",
-      "{user} cho {target} một cái ôm! 🤗",
+      "{user} *ôm {target}* 🫂",
       "{user} ôm {target}~ *hug hug* ⊂(・﹏・⊂)",
-      "{user} ôm {target} không thả! Dễ thương quá~ 🥰✨"
+      "{user} ôm {target} không thả! Dễ thương ghê~ 🥰✨",
+      "{user} ôm {target} một cái! Ấm lắm nè~ 🤗💕"
     ],
     self: [
       "{user} tự ôm lấy mình... Ủa là sao ta? 🤗",
-      "Sao {user} lại tự ôm mình? Bạn ổn chứ? 😢",
+      "{user} tự ôm mình... Bạn ổn chứ? 😢",
       "{user} không có ai ôm nên tự ôm... Đừng buồn nha! 🥺"
     ],
     bot: [
       "{user} ôm tớ á! Cảm ơn~ 🤗",
-      "{user} ôm tớ! *ôm lại* Ấm áp ghê! 🥰",
-      "{user} ôm tớ! Hơi bất ngờ nhưng dễ thương~ 🤗"
+      "{user} ôm tớ! *ôm lại* Ấm ghê! 🥰",
+      "{user} ôm tớ! Bất ngờ nhưng dễ thương~ 🤗"
     ],
   },
   kick: {
@@ -237,18 +247,18 @@ export default {
     message: [
       "{user} đá {target}! 👟",
       "{user} đá {target} bay đi! 💥",
-      "{user} đá {target} thật mạnh! 🦵",
-      "{user} đá mạnh vào {target}! ⚡👟",
+      "{user} đá {target} mạnh lắm! 🦵",
       "{user} *đá đít {target}* Cút đi! 💢",
-      "{user} đá {target} bay lên trời! POW~ 👟💫"
+      "{user} đá {target} bay lên trời luôn! POW~ 👟💫",
+      "{user} đá {target} nè! Đau chưa~ 😤👟"
     ],
     self: [
       "{user} tự đá mình... Ơ kìa là sao ta? 👟",
-      "Ê {user}! Đừng tự đá bản thân! Đau lắm! 😭",
+      "{user} đừng tự đá bản thân! Đau lắm! 😭",
       "{user} đá chính mình... Trời ơi bạn điên rồi à?! 🤕"
     ],
     bot: [
-      "{user} đá tớ á!? Hơi bị thô lỗ! 👟😤",
+      "{user} đá tớ á!? Hơi bị thô lỗ đó! 👟😤",
       "Ê {user}! Đừng đá tớ! 💢",
       "{user} đá tớ! *né* Đá không trúng đâu~ 😤"
     ],
@@ -261,11 +271,12 @@ export default {
       "{user} hôn {target} nhẹ nhàng~ 😘",
       "{user} *hôn má {target}* Mwah! 😚",
       "{user} hôn {target}~ *mwah mwah* >//< ✨",
-      "{user} kiss {target}! Mwah~ (づ ̄ ³ ̄)づ"
+      "{user} kiss {target}! Mwah~ (づ ̄ ³ ̄)づ",
+      "{user} hôn {target} một cái! Chu~ 😚💕"
     ],
     self: [
       "{user} tự hôn mình... Ủa tự yêu bản thân quá à? 😅",
-      "Sao {user} lại tự hôn bản thân? Là sao ta? 🪞",
+      "{user} tự hôn bản thân? Là sao ta? 🪞",
       "{user} hôn gương... Có vẻ hơi quá rồi đó! 😂"
     ],
     bot: [
@@ -279,7 +290,7 @@ export default {
     message: [
       "{user} đang cười! 😂",
       "{user} cười như điên! 🤣",
-      "{user} cười sặc sụa! 😂😂",
+      "{user} cười sặc sụa luôn! 😂😂",
       "{user} *cười lăn lộn* HAHAHA~ 🤣",
       "{user} cười không ngậm được miệng! Ahahaha~ (≧▽≦)"
     ],
@@ -289,15 +300,18 @@ export default {
     message: [
       "{user} đang rình rập... 👀",
       "{user} núp bóng rình mò... 🕵️",
-      "{user} lén lút quan sát... 👁️"
+      "{user} lén lút quan sát... 👁️",
+      "{user} *núp trong bóng tối* 👀",
+      "{user} ẩn mình rình mò nè... 🕵️‍♀️"
     ],
   },
   nod: {
     description: "Gật đầu đồng ý",
     message: [
-      "{user} gật đầu 👍",
+      "{user} gật đầu~ 👍",
       "{user} đồng ý! ✅",
-      "{user} gật gật~ 👌"
+      "{user} gật gật~ 👌",
+      "{user} *gật đầu* Ừ~ 😊"
     ],
   },
   nom: {
@@ -305,7 +319,7 @@ export default {
     message: [
       "{user} đang ăn! 😋",
       "{user} nom nom nom! 🍽️",
-      "{user} thưởng thức bữa ăn! 😋✨",
+      "{user} ăn ngon lành! 😋✨",
       "{user} *ăn ngon lành* Nom nom~ (っ˘ڡ˘ς)",
       "{user} đang ăn cực đã! Yummy yummy~ 🍽️💕"
     ],
@@ -315,7 +329,8 @@ export default {
     message: [
       "{user} nói không! 🙅",
       "{user} không đồng ý! ❌",
-      "{user} từ chối! 🙅‍♂️"
+      "{user} từ chối luôn! 🙅",
+      "{user} *lắc đầu* Nope! 🙅‍♀️"
     ],
   },
   pat: {
@@ -326,27 +341,29 @@ export default {
       "{user} xoa đầu {target}~ ✨",
       "{user} *vuốt đầu {target}* Ngoan lắm! 😊",
       "{user} pat pat {target}~ (´ ∀ ` *)",
-      "{user} vỗ đầu {target} nhẹ nhàng~ Good! 👋💕"
+      "{user} vỗ đầu {target} nhẹ nhàng! Good~ 👋💕",
+      "{user} vỗ đầu {target}! Dễ thương ghê~ 😊"
     ],
     self: [
       "{user} tự vỗ đầu... Good job mình! 👋😊",
       "{user} vỗ đầu bản thân... Ủa tự khen à? ✨",
-      "{user} tự vỗ đầu mình! Làm tốt lắm nhé! 🥰"
+      "{user} tự vỗ đầu mình! Làm tốt lắm nha! 🥰"
     ],
     bot: [
       "{user} vỗ đầu tớ nè~ Dễ thương! 👋",
       "{user} pat pat tớ! Thích lắm~ 🥰",
-      "{user} vỗ đầu tớ! *purrs* Vỗ nữa đi! ^_^"
+      "{user} vỗ đầu tớ! *purrs* Vỗ nữa đi~ ^_^"
     ],
   },
   peck: {
     description: "Hôn nhẹ ai đó",
     message: [
       "{user} hôn nhẹ {target}~ 😘",
-      "{user} hôn {target} nhẹ nhàng! 😚",
+      "{user} hôn {target} nhẹ thôi! 😚",
       "{user} hôn gió {target}~ ✨",
       "{user} *hôn má {target}* Mwah~ (づ ̄ ³ ̄)づ",
-      "{user} kiss {target} nhẹ thôi~ Chu~ 😚💕"
+      "{user} kiss {target} nhẹ nha! Chu~ 😚💕",
+      "{user} hôn {target} một cái nhẹ! Mwah~ 😘"
     ],
     self: [
       "{user} tự hôn nhẹ mình... 😅",
@@ -364,26 +381,27 @@ export default {
     message: [
       "{user} chọc {target}~ 👉",
       "{user} chọc chọc {target}! 👈",
-      "{user} chọc {target} thôi~ 👉👈",
+      "{user} chọc {target} nè~ 👉👈",
       "{user} *chọc nhẹ {target}* (づ ̄ ³ ̄)づ",
-      "{user} chọc {target} tí ti! Poke poke~ 👉😊"
+      "{user} chọc {target} tí ti! Poke poke~ 👉😊",
+      "{user} chọc {target}! Này này~ 👉"
     ],
     self: [
       "{user} tự chọc mình... Sao lại làm vậy? 👉😅",
-      "Ê {user}! Chọc bản thân làm gì? 🤔",
+      "{user} chọc bản thân làm gì? 🤔",
       "{user} poke chính mình... Lạ thật! 👉"
     ],
     bot: [
       "{user} chọc tớ! 👉",
-      "Ê {user}! Đừng chọc tớ! Gây gổ à! 😤",
+      "{user} đừng chọc tớ! Gây gổ à! 😤",
       "{user} chọc tớ! *chọc lại* Chọc lại nè! 👉😊"
     ],
   },
   pout: {
     description: "Bĩu môi",
     message: [
-      "{user} đang bĩu môi~ 😾",
-      "{user} hờn dỗi quá~ 😤",
+      "{user} bĩu môi nè~ 😾",
+      "{user} hờn dỗi rồi~ 😤",
       "{user} bĩu môi tí ti... 😾",
       "{user} *bĩu môi hờn* Hmph! (｡•́︿•̀｡)",
       "{user} bĩu môi không thèm nói! Hừ~ 😤💢"
@@ -396,17 +414,18 @@ export default {
       "{user} đấm mạnh {target}! 💥",
       "{user} cho {target} nếm đấm! 🥊",
       "{user} *đấm bay {target}* POW! 👊💢",
-      "{user} đấm {target}! Ora ora ora! ୧(๑•̀ㅁ•́๑)૭✧"
+      "{user} đấm {target}! Ora ora ora! ୧(๑•̀ㅁ•́๑)૭✧",
+      "{user} đấm {target} nè! Đau chưa~ 👊"
     ],
     self: [
       "{user} tự đấm mình... Ơ kìa làm sao vậy? 👊",
-      "Ê {user}! Đừng tự hại bản thân! 😭",
+      "{user} đừng tự hại bản thân! 😭",
       "{user} đấm chính mình... Vãi đau lắm đó! 🤕"
     ],
     bot: [
-      "Ê {user}! Đừng đấm tớ! Đau lắm! 👊😤",
+      "{user} đừng đấm tớ! Đau lắm! 👊😤",
       "{user} đấm tớ á!? Violence! 💢",
-      "{user} đấm tớ! *block* Không vào được đâu~ 😤"
+      "{user} đấm tớ! *block* Đấm không vào được đâu~ 😤"
     ],
   },
   run: {
@@ -414,7 +433,9 @@ export default {
     message: [
       "{user} đang chạy! 🏃",
       "{user} chạy vèo vèo! 💨",
-      "{user} chạy nhanh như gió! 🏃‍♂️💨"
+      "{user} chạy nhanh như gió! 🏃‍♂️💨",
+      "{user} *chạy trốn* Bye bye~ 💨",
+      "{user} chạy mất dép luôn! 🏃✨"
     ],
   },
   shoot: {
@@ -422,15 +443,18 @@ export default {
     message: [
       "{user} đang bắn! 🔫",
       "{user} bắn liên thanh! 💥",
-      "{user} nhắm bắn! 🎯"
+      "{user} nhắm bắn! 🎯",
+      "{user} *pew pew* Bắn nè! 🔫",
+      "{user} bắn rồi đó! Bang bang~ 💥"
     ],
   },
   shrug: {
     description: "Nhún vai",
     message: [
-      "{user} nhún vai 🤷",
+      "{user} nhún vai~ 🤷",
       "{user} mặc kệ đi~ ¯\\_(ツ)_/¯",
-      "{user} nhún vai thờ ơ... 🤷‍♂️"
+      "{user} nhún vai thờ ơ... 🤷",
+      "{user} *nhún vai* Mơ à~ 🤷‍♀️"
     ],
   },
   slap: {
@@ -444,12 +468,12 @@ export default {
       "{user} tát {target} bay luôn! *PAK PAK* ✋😤"
     ],
     self: [
-      "{user} tự tát... Ủa wake up! ✋",
-      "Ê {user}! Sao lại tự tát mình? Là sao ta? 😵💫",
+      "{user} tự tát mình... Ủa wake up! ✋",
+      "{user} sao lại tự tát mình? Là sao ta? 😵💫",
       "{user} tát bản thân tỉnh ngủ... Vãi đau lắm đó! 🤕"
     ],
     bot: [
-      "Ê {user}! Đừng tát tớ! Đau lắm! ✋😭",
+      "{user} đừng tát tớ! Đau lắm! ✋😭",
       "{user} tát tớ á!? Giời ơi đau quá! 😭💢",
       "{user} tát tớ! *né* Tát không trúng đâu~ 😤"
     ],
@@ -458,8 +482,8 @@ export default {
     description: "Đi ngủ",
     message: [
       "{user} đang ngủ... 😴",
-      "{user} ngủ say quá~ 💤",
-      "{user} gục đầu ngủ rồi... zzZ",
+      "{user} ngủ say rồi~ 💤",
+      "{user} gục đầu ngủ mất rồi... zzZ",
       "{user} *ngủ gật* Zzz... (´-ω-`)",
       "{user} buồn ngủ quá! Ngủ đây... 😴💤"
     ],
@@ -471,7 +495,7 @@ export default {
       "{user} cười tươi! ☺️",
       "{user} nở nụ cười! 😌",
       "{user} *cười tươi rói* (◕‿◕✿)",
-      "{user} cười dễ thương quá! Hehe~ 😊✨"
+      "{user} cười dễ thương ghê! Hehe~ 😊✨"
     ],
   },
   smug: {
@@ -481,15 +505,17 @@ export default {
       "{user} cười kiêu ngạo~ 😤",
       "{user} nhếch mép cười~ 😼",
       "{user} *cười smug* Hehe~ (¬‿¬)",
-      "{user} tự tin quá! Cười kiêu hãnh~ 😎✨"
+      "{user} tự tin quá đi! Cười kiêu hãnh nè~ 😎✨"
     ],
   },
   stare: {
     description: "Nhìn chằm chằm",
     message: [
-      "{user} đang nhìn chằm chằm... 👁️",
+      "{user} nhìn chằm chằm... 👁️",
       "{user} nhìn không chớp mắt... 👀",
-      "{user} nhìn chằm chằm... ಠ_ಠ"
+      "{user} nhìn chằm chằm nè... ಠ_ಠ",
+      "{user} *nhìn chằm chằm* 👀",
+      "{user} đang nhìn đó... 👁️👁️"
     ],
   },
   think: {
@@ -497,7 +523,8 @@ export default {
     message: [
       "{user} đang suy nghĩ... 🤔",
       "{user} đang nghĩ ngợi... 💭",
-      "{user} trầm tư... 🤔💭"
+      "{user} trầm tư nè... 🤔💭",
+      "{user} *suy nghĩ* Hmm... 🤔"
     ],
   },
   thumbsup: {
@@ -505,7 +532,8 @@ export default {
     message: [
       "{user} giơ ngón cái! 👍",
       "{user} like! 👍✨",
-      "{user} good job! 👍😎"
+      "{user} good job! 👍😎",
+      "{user} *giơ ngón cái* Nice~ 👍"
     ],
   },
   tickle: {
@@ -515,7 +543,8 @@ export default {
       "{user} cù cù {target}! 😂",
       "{user} cù {target} tí nha! 🤣",
       "{user} *cù {target} không thương tiếc!* Hehe~ (｡•̀ᴗ-)✧",
-      "{user} cù {target} chết đi! Tickle tickle~ 🤣💫"
+      "{user} cù {target} chết mất! Tickle tickle~ 🤣💫",
+      "{user} cù {target} nè! Ngứa chưa~ 😂"
     ],
     self: [
       "{user} tự cù mình... Ơ kìa làm sao vậy? 🤗",
@@ -545,7 +574,7 @@ export default {
       "{user} nháy mắt tinh nghịch~ 😉",
       "{user} nháy mắt dễ thương! 😉✨",
       "{user} *nháy mắt* Chu~ (^_-)",
-      "{user} wink cute! Hehe~ 😉💫"
+      "{user} wink cute nè! Hehe~ 😉💫"
     ],
   },
   yawn: {
@@ -553,7 +582,7 @@ export default {
     message: [
       "{user} đang ngáp... 🥱",
       "{user} ngáp dài... 😮‍💨",
-      "{user} ngáp ngủ quá... 🥱💤",
+      "{user} ngáp buồn ngủ quá... 🥱💤",
       "{user} *ngáp to* Haahh... (｡´O｀)ﾉ",
       "{user} buồn ngủ rồi! Yawn yawn~ 🥱✨"
     ],
@@ -565,7 +594,8 @@ export default {
       "{user} yeet {target} bay xa! 💨",
       "{user} ném {target} vào không gian! 🌌",
       "{user} *ném {target} bay lên trời* YEET! 🚀💫",
-      "{user} yeet {target} đi! Wheee~ 🌠"
+      "{user} yeet {target} đi! Wheee~ 🌠",
+      "{user} ném {target} bay luôn! Bye bye~ 🚀"
     ],
     self: [
       "{user} tự ném mình vào không gian! 🚀",
