@@ -5,6 +5,8 @@
 export default {
   error: "❌ Không thể lấy GIF. Vui lòng thử lại sau!",
   user_option: "Người bạn muốn tương tác",
+  user_required: "❌ Vui lòng mention một người dùng! Cách dùng: `{prefix}{command} @user`",
+  user_not_found: "❌ Không tìm thấy người dùng này!",
 
   angry: {
     description: "Tức giận",

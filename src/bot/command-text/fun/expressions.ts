@@ -1,15 +1,10 @@
 /**
- * Expression Commands
- * All expression commands that show user actions with GIFs from neko.best
+ * Expression Text Commands
+ * Text-based expression commands that show user actions with GIFs from neko.best
  */
 
-import {
-  SlashCommandBuilder,
-  EmbedBuilder,
-  ApplicationIntegrationType,
-  InteractionContextType
-} from 'discord.js';
-import { Command } from '../../types/command';
+import { EmbedBuilder } from 'discord.js';
+import { TextCommand } from '../../types/text-command';
 import { fetchNekoGif, EXPRESSION_ACTIONS } from '../../utils/nekobest';
 import { t, getAllLocalizations, locales, getDefaultLocale } from '../../../i18n';
 
@@ -72,50 +67,37 @@ const EMOTION_COLORS: Record<string, number> = {
   thumbsup: 0x2ECC71,
 };
 
-// Generate all expression commands
-const expressionCommands: Command[] = EXPRESSION_ACTIONS.map(action => ({
-  data: new SlashCommandBuilder()
-    .setName(action)
-    .setDescription(t(`commands.fun.${action}.description`, {}, 'en-US'))
-    .setDescriptionLocalizations(
-      getAllLocalizations(`commands.fun.${action}.description`)
-    )
-    .setIntegrationTypes(
-      ApplicationIntegrationType.GuildInstall,
-      ApplicationIntegrationType.UserInstall
-    )
-    .setContexts(
-      InteractionContextType.Guild,
-      InteractionContextType.BotDM,
-      InteractionContextType.PrivateChannel
-    ),
+// Generate all expression text commands
+const expressionTextCommands: TextCommand[] = EXPRESSION_ACTIONS.map(action => ({
+  name: action,
+  description: t(`commands.fun.${action}.description`, {}, 'en-US'),
+  category: 'fun',
+  cooldown: 3,
 
-  async execute({ interaction, locale }) {
+  async execute({ message, locale }) {
     try {
-      await interaction.deferReply();
-
       const gifUrl = await fetchNekoGif(action);
 
-      const message = getRandomMessage(
+      const msg = getRandomMessage(
         `commands.fun.${action}.message`,
-        { user: interaction.user.username },
+        { user: message.author.username },
         locale || getDefaultLocale()
       );
 
       const embed = new EmbedBuilder()
         .setColor(EMOTION_COLORS[action] || 0x3498DB)
-        .setDescription(message)
+        .setDescription(msg)
         .setImage(gifUrl)
         .setFooter({ text: 'Powered by nekos.best' });
 
-      await interaction.editReply({ embeds: [embed] });
+      await message.reply({ embeds: [embed] });
     } catch (error) {
       console.error(`[${action.toUpperCase()}] Error:`, error);
-      await interaction.editReply({
+      await message.reply({
         content: t('commands.fun.error', {}, locale as any),
       });
     }
   },
 }));
 
-export default expressionCommands;
+export default expressionTextCommands;

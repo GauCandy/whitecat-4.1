@@ -8,6 +8,7 @@ import pool, { query, close } from '../db/pool';
 import client from './client';
 import { loadEvents } from './handlers/events';
 import { loadCommands } from './handlers/commands';
+import { loadTextCommands } from './handlers/text-commands';
 import i18n from '../i18n';
 
 // Load environment variables
@@ -80,6 +81,7 @@ async function startBot() {
     // Initialize Discord bot
     log('\nInitializing Discord bot...', colors.yellow);
     await loadCommands(client);
+    await loadTextCommands(client);
     await loadEvents(client);
 
     // Login to Discord

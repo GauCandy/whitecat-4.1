@@ -142,8 +142,8 @@ CREATE INDEX idx_transactions_created_at ON transactions(created_at DESC);
 CREATE TABLE guilds (
   id BIGSERIAL PRIMARY KEY,
   guild_id VARCHAR(20) UNIQUE NOT NULL,          -- Discord Guild ID
-  locale VARCHAR(10) DEFAULT 'en-US',            -- Ngôn ngữ: 'en-US', 'vi'
-  prefix VARCHAR(10) DEFAULT '!',                -- Prefix lệnh text
+  locale VARCHAR(10),                            -- Ngôn ngữ: 'en-US', 'vi' (NULL = dùng DEFAULT_LOCALE từ env)
+  prefix VARCHAR(10),                            -- Prefix lệnh text (NULL = dùng BOT_PREFIX từ env)
   joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Bot join khi nào
   left_at TIMESTAMP                              -- Bot rời khi nào (null = chưa rời)
 );

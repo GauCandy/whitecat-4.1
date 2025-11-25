@@ -18,8 +18,18 @@ export const locales = {
 export type Locale = keyof typeof locales;
 export type TranslationKey = string;
 
+// Get default locale from environment variable
+const DEFAULT_LOCALE = (process.env.DEFAULT_LOCALE || 'en-US') as Locale;
+
 // Current locale
-let currentLocale: Locale = 'vi';
+let currentLocale: Locale = DEFAULT_LOCALE;
+
+/**
+ * Get default locale from environment
+ */
+export function getDefaultLocale(): Locale {
+  return DEFAULT_LOCALE;
+}
 
 /**
  * Initialize i18n system
@@ -29,7 +39,7 @@ export function init(locale?: string): void {
   if (locale && locale in locales) {
     currentLocale = locale as Locale;
   } else {
-    currentLocale = 'vi';
+    currentLocale = DEFAULT_LOCALE;
   }
 
   console.log(`\x1b[32m✓ i18n initialized with locale: ${currentLocale}\x1b[0m`);
@@ -65,7 +75,7 @@ export function t(
   locale?: Locale
 ): string {
   const targetLocale = locale || currentLocale;
-  const translations = locales[targetLocale] || locales['vi'];
+  const translations = locales[targetLocale] || locales[DEFAULT_LOCALE];
 
   // Navigate through nested keys
   const keys = key.split('.');
@@ -75,8 +85,8 @@ export function t(
     if (value && typeof value === 'object' && k in value) {
       value = value[k];
     } else {
-      // Fallback to Vietnamese if key not found
-      value = locales['vi'];
+      // Fallback to default locale if key not found
+      value = locales[DEFAULT_LOCALE];
       for (const k2 of keys) {
         if (value && typeof value === 'object' && k2 in value) {
           value = value[k2];
@@ -156,6 +166,7 @@ export default {
   t,
   getT,
   getLocale,
+  getDefaultLocale,
   setLocale,
   isLocaleSupported,
   getSupportedLocales,

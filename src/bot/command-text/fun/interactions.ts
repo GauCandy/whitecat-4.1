@@ -1,15 +1,10 @@
 /**
- * Interaction Commands
- * All interaction commands that require a target user with GIFs from neko.best
+ * Interaction Text Commands
+ * Text-based interaction commands that require a target user with GIFs from neko.best
  */
 
-import {
-  SlashCommandBuilder,
-  EmbedBuilder,
-  ApplicationIntegrationType,
-  InteractionContextType
-} from 'discord.js';
-import { Command } from '../../types/command';
+import { EmbedBuilder } from 'discord.js';
+import { TextCommand } from '../../types/text-command';
 import { fetchNekoGif, INTERACTION_ACTIONS } from '../../utils/nekobest';
 import { t, getAllLocalizations, locales, getDefaultLocale } from '../../../i18n';
 
@@ -67,80 +62,85 @@ const INTERACTION_COLORS: Record<string, number> = {
   nom: 0xFF8C00,
 };
 
-// Generate all interaction commands
-const interactionCommands: Command[] = INTERACTION_ACTIONS.map(action => ({
-  data: new SlashCommandBuilder()
-    .setName(action)
-    .setDescription(t(`commands.fun.${action}.description`, {}, 'en-US'))
-    .setDescriptionLocalizations(
-      getAllLocalizations(`commands.fun.${action}.description`)
-    )
-    .addUserOption(option =>
-      option
-        .setName('user')
-        .setDescription(t('commands.fun.user_option', {}, 'en-US'))
-        .setDescriptionLocalizations(getAllLocalizations('commands.fun.user_option'))
-        .setRequired(true)
-    )
-    .setIntegrationTypes(
-      ApplicationIntegrationType.GuildInstall,
-      ApplicationIntegrationType.UserInstall
-    )
-    .setContexts(
-      InteractionContextType.Guild,
-      InteractionContextType.BotDM,
-      InteractionContextType.PrivateChannel
-    ),
+// Generate all interaction text commands
+const interactionTextCommands: TextCommand[] = INTERACTION_ACTIONS.map(action => ({
+  name: action,
+  description: t(`commands.fun.${action}.description`, {}, 'en-US'),
+  usage: `${action} @user`,
+  category: 'fun',
+  cooldown: 3,
 
-  async execute({ interaction, locale }) {
+  async execute({ message, args, locale }) {
     try {
-      const targetUser = interaction.options.getUser('user', true);
       const currentLocale = locale || getDefaultLocale();
 
-      // Case 1: Self-interaction (REJECT - ephemeral, no GIF)
-      if (targetUser.id === interaction.user.id) {
-        const message = getRandomMessage(
+      // Get mentioned user or try to find user by name/id
+      let targetUser = message.mentions.users.first();
+
+      // If no mention, try to get user from args
+      if (!targetUser && args.length > 0) {
+        const userArg = args[0];
+        // Try to find by ID
+        try {
+          targetUser = await message.client.users.fetch(userArg);
+        } catch {
+          // If not found, return error
+          await message.reply({
+            content: t('commands.fun.user_not_found', {}, currentLocale as any) ||
+                     `Please mention a user! Usage: \`${message.content.split(' ')[0]} @user\``,
+          });
+          return;
+        }
+      }
+
+      // If still no target user
+      if (!targetUser) {
+        await message.reply({
+          content: t('commands.fun.user_required', {}, currentLocale as any) ||
+                   `Please mention a user! Usage: \`${message.content.split(' ')[0]} @user\``,
+        });
+        return;
+      }
+
+      // Case 1: Self-interaction (REJECT - no GIF)
+      if (targetUser.id === message.author.id) {
+        const msg = getRandomMessage(
           `commands.fun.${action}.self`,
-          { user: interaction.user.username },
+          { user: message.author.username },
           currentLocale
         );
 
-        await interaction.reply({
-          content: message,
-          ephemeral: true,
+        await message.reply({
+          content: msg,
         });
         return;
       }
 
       // Case 2: Current bot interaction (special response with GIF)
-      if (targetUser.id === interaction.client.user.id) {
-        await interaction.deferReply();
-
+      if (targetUser.id === message.client.user.id) {
         const gifUrl = await fetchNekoGif(action);
-        const message = getRandomMessage(
+        const msg = getRandomMessage(
           `commands.fun.${action}.bot`,
-          { user: interaction.user.username },
+          { user: message.author.username },
           currentLocale
         );
 
         const embed = new EmbedBuilder()
           .setColor(INTERACTION_COLORS[action] || 0x3498DB)
-          .setDescription(message)
+          .setDescription(msg)
           .setImage(gifUrl)
           .setFooter({ text: 'Powered by nekos.best' });
 
-        await interaction.editReply({ embeds: [embed] });
+        await message.reply({ embeds: [embed] });
         return;
       }
 
       // Case 3: Normal interaction (other users and other bots)
-      await interaction.deferReply();
-
       const gifUrl = await fetchNekoGif(action);
-      const message = getRandomMessage(
+      const msg = getRandomMessage(
         `commands.fun.${action}.message`,
         {
-          user: interaction.user.username,
+          user: message.author.username,
           target: targetUser.username,
         },
         currentLocale
@@ -148,18 +148,18 @@ const interactionCommands: Command[] = INTERACTION_ACTIONS.map(action => ({
 
       const embed = new EmbedBuilder()
         .setColor(INTERACTION_COLORS[action] || 0x3498DB)
-        .setDescription(message)
+        .setDescription(msg)
         .setImage(gifUrl)
         .setFooter({ text: 'Powered by nekos.best' });
 
-      await interaction.editReply({ embeds: [embed] });
+      await message.reply({ embeds: [embed] });
     } catch (error) {
       console.error(`[${action.toUpperCase()}] Error:`, error);
-      await interaction.editReply({
+      await message.reply({
         content: t('commands.fun.error', {}, locale as any),
       });
     }
   },
 }));
 
-export default interactionCommands;
+export default interactionTextCommands;

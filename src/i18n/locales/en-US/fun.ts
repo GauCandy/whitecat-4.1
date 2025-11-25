@@ -5,6 +5,8 @@
 export default {
   error: "❌ Could not fetch GIF. Please try again later!",
   user_option: "The user to interact with",
+  user_required: "❌ Please mention a user! Usage: `{prefix}{command} @user`",
+  user_not_found: "❌ User not found!",
 
   angry: {
     description: "Get angry",
