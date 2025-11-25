@@ -26,13 +26,18 @@ function loadCommandsFromDirectory(dirPath: string): void {
       loadCommandsFromDirectory(itemPath);
     } else if (item.endsWith('.ts') || item.endsWith('.js')) {
       // Load command file
-      const command = require(itemPath).default as Command;
+      const commandExport = require(itemPath).default;
 
-      if (command && command.data && typeof command.execute === 'function') {
-        commands.set(command.data.name, command);
-        console.log(`\x1b[32m  ✓ Loaded command: ${command.data.name}\x1b[0m`);
-      } else {
-        console.log(`\x1b[33m  ⚠️  Skipped ${item}: missing data or execute\x1b[0m`);
+      // Handle both single command and array of commands
+      const commandsToLoad = Array.isArray(commandExport) ? commandExport : [commandExport];
+
+      for (const command of commandsToLoad) {
+        if (command && command.data && typeof command.execute === 'function') {
+          commands.set(command.data.name, command);
+          console.log(`\x1b[32m  ✓ Loaded command: ${command.data.name}\x1b[0m`);
+        } else {
+          console.log(`\x1b[33m  ⚠️  Skipped ${item}: missing data or execute\x1b[0m`);
+        }
       }
     }
   }

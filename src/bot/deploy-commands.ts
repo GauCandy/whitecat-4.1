@@ -40,13 +40,18 @@ function loadCommandData(dirPath: string): any[] {
     if (stat.isDirectory()) {
       // Recursively load from subdirectory
       commands.push(...loadCommandData(itemPath));
-    } else if (item.endsWith('.ts') || item.endsWith('.js')) {
+    } else if (item.endsWith('.js') && !item.endsWith('.d.ts')) {
       // Load command file
-      const command = require(itemPath).default;
+      const commandExport = require(itemPath).default;
 
-      if (command && command.data) {
-        commands.push(command.data.toJSON());
-        log(`  ✓ Loaded: ${command.data.name}`, colors.green);
+      // Handle both single command and array of commands
+      const commandsToLoad = Array.isArray(commandExport) ? commandExport : [commandExport];
+
+      for (const command of commandsToLoad) {
+        if (command && command.data) {
+          commands.push(command.data.toJSON());
+          log(`  ✓ Loaded: ${command.data.name}`, colors.green);
+        }
       }
     }
   }
