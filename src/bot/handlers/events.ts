@@ -8,7 +8,7 @@ import fs from 'fs';
 import path from 'path';
 
 export async function loadEvents(client: Client): Promise<void> {
-  const eventsPath = path.join(__dirname, 'events');
+  const eventsPath = path.join(__dirname, '../events');
 
   if (!fs.existsSync(eventsPath)) {
     console.log('\x1b[33m⚠️  No events directory found\x1b[0m');

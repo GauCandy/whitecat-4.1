@@ -6,8 +6,8 @@
 import dotenv from 'dotenv';
 import pool, { query, close } from '../db/pool';
 import client from './client';
-import { loadEvents } from './loadEvents';
-import { loadCommands } from './loadCommands';
+import { loadEvents } from './handlers/events';
+import { loadCommands } from './handlers/commands';
 import i18n from '../i18n';
 
 // Load environment variables

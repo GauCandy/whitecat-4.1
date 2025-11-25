@@ -4,7 +4,7 @@
  */
 
 import { Client, Collection } from 'discord.js';
-import { Command } from './types/command';
+import { Command } from '../types/command';
 import fs from 'fs';
 import path from 'path';
 
@@ -45,7 +45,7 @@ function loadCommandsFromDirectory(dirPath: string): void {
 export async function loadCommands(client: Client): Promise<void> {
   console.log('\x1b[33mLoading slash commands...\x1b[0m');
 
-  const commandsPath = path.join(__dirname, 'commands');
+  const commandsPath = path.join(__dirname, '../commands');
 
   if (!fs.existsSync(commandsPath)) {
     console.log('\x1b[33m⚠️  No commands directory found\x1b[0m');

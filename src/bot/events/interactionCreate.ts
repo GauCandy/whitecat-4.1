@@ -4,7 +4,7 @@
  */
 
 import { Interaction, MessageFlags } from 'discord.js';
-import { commands } from '../loadCommands';
+import { commands } from '../handlers/commands';
 import { t } from '../../i18n';
 import { checkTermsAccepted } from '../middleware/termsCheck';
 
