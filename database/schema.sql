@@ -155,11 +155,11 @@ CREATE INDEX idx_guilds_guild_id ON guilds(guild_id);
 -- ==========================================
 CREATE TABLE auto_responses (
   id SERIAL PRIMARY KEY,
-  guild_id BIGINT NOT NULL REFERENCES guilds(id) ON DELETE CASCADE,
+  guild_id VARCHAR(20) NOT NULL REFERENCES guilds(guild_id) ON DELETE CASCADE,
   keyword VARCHAR(255) NOT NULL,                 -- Từ khóa trigger
   response_text TEXT,                            -- Text reply (null = chỉ embed)
   response_embed JSONB,                          -- Embed reply (null = chỉ text)
-  match_type VARCHAR(20) DEFAULT 'contains',     -- 'contains', 'exact', 'starts_with'
+  match_type VARCHAR(20) DEFAULT 'contains',     -- exact, contains, starts_with, ends_with, regex
   is_case_sensitive BOOLEAN DEFAULT false,       -- Phân biệt hoa/thường?
   is_enabled BOOLEAN DEFAULT true,               -- Còn hoạt động?
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

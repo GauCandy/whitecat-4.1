@@ -50,8 +50,24 @@ async function handleCommand(interaction: any) {
     return;
   }
 
-  // Get user's locale (Discord provides this)
-  const locale = interaction.locale || 'en-US';
+  // Get guild's configured locale from database (or fallback to Discord locale)
+  let locale = interaction.locale || 'en-US';
+
+  if (interaction.guild) {
+    try {
+      const guildResult = await query(
+        'SELECT locale FROM guilds WHERE guild_id = $1',
+        [interaction.guild.id]
+      );
+      const guildLocale = guildResult.rows[0]?.locale;
+      if (guildLocale) {
+        locale = guildLocale;
+      }
+    } catch (error) {
+      console.error('[LOCALE] Error fetching guild locale:', error);
+      // Fallback to interaction.locale or 'en-US'
+    }
+  }
 
   try {
     // Check if guild only

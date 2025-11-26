@@ -57,14 +57,11 @@ function isMatch(content: string, keyword: string, matchType: string, caseSensit
  */
 async function getGuildAutoResponses(guildId: string): Promise<AutoResponse[]> {
   try {
-    // NOTE: guild_id in database might be BIGINT (internal ID) or VARCHAR (Discord ID)
-    // depending on your schema. Adjust query accordingly.
     const result = await query(
-      `SELECT ar.*
-       FROM auto_responses ar
-       JOIN guilds g ON ar.guild_id = g.id
-       WHERE g.guild_id = $1 AND ar.is_enabled = true
-       ORDER BY ar.id ASC`,
+      `SELECT *
+       FROM auto_responses
+       WHERE guild_id = $1 AND is_enabled = true
+       ORDER BY id ASC`,
       [guildId]
     );
 
@@ -87,15 +84,30 @@ async function sendAutoResponse(message: Message, response: AutoResponse): Promi
       replyOptions.content = response.response_text;
     }
 
-    // Add embed response
-    if (response.response_embed) {
-      try {
-        const embedData = response.response_embed;
-        const embed = new EmbedBuilder(embedData);
-        replyOptions.embeds = [embed];
-      } catch (error) {
-        console.error('[AUTO RESPONSE] Error creating embed:', error);
+    // Add embed response (only if valid)
+    if (response.response_embed && typeof response.response_embed === 'object') {
+      const embedData = response.response_embed;
+
+      // Check if embed has at least one required field
+      const hasContent = !!(
+        embedData.title ||
+        embedData.description ||
+        (embedData.fields && embedData.fields.length > 0) ||
+        embedData.author ||
+        embedData.footer ||
+        embedData.image ||
+        embedData.thumbnail
+      );
+
+      if (hasContent) {
+        try {
+          const embed = new EmbedBuilder(embedData);
+          replyOptions.embeds = [embed];
+        } catch (error) {
+          console.error('[AUTO RESPONSE] Error creating embed:', error);
+        }
       }
+      // If no content, silently skip embed
     }
 
     // Send reply if we have content or embeds

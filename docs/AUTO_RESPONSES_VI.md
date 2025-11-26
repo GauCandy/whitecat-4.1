@@ -92,7 +92,8 @@ VALUES (
 ```
 
 **Lưu ý:**
-- Tất cả fields đều optional, chỉ dùng cái nào cần
+- **QUAN TRỌNG:** Embed phải có ít nhất MỘT trong các field: `title`, `description`, `fields`, `author`, `footer`, `image`, hoặc `thumbnail`
+- Embed rỗng `{}` sẽ bị Discord từ chối
 - `color` phải là decimal (không phải hex): `0x5865F2` → `5814783`
 - Dùng `\n` để xuống dòng trong string
 - Tối đa 25 fields, tổng embed ≤ 6000 ký tự

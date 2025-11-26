@@ -81,3 +81,29 @@ export function getLanguageInfo(locale: string): LanguageMetadata {
 export function getPrimaryLocales(): string[] {
   return ['en-US', 'vi']; // Update this when adding new primary locales
 }
+
+/**
+ * Language list for selection menus
+ */
+export interface Language {
+  code: string;
+  name: string;
+  nativeName: string;
+  flag: string;
+}
+
+export const LANGUAGES: Language[] = [
+  {
+    code: 'en-US',
+    name: 'English',
+    nativeName: 'English',
+    flag: '🇺🇸',
+  },
+  {
+    code: 'vi',
+    name: 'Vietnamese',
+    nativeName: 'Tiếng Việt',
+    flag: '🇻🇳',
+  },
+  // Add more languages here as needed
+];

@@ -92,7 +92,8 @@ VALUES (
 ```
 
 **Notes:**
-- All fields are optional, use only what you need
+- **IMPORTANT:** Embed must have at least ONE of: `title`, `description`, `fields`, `author`, `footer`, `image`, or `thumbnail`
+- Empty embed `{}` will be rejected by Discord
 - `color` must be decimal (not hex): `0x5865F2` → `5814783`
 - Use `\n` for line breaks in strings
 - Max 25 fields, total embed ≤ 6000 chars
