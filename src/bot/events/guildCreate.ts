@@ -13,10 +13,11 @@ import {
   ButtonStyle,
   PermissionFlagsBits,
   AuditLogEvent,
+  TextChannel,
 } from 'discord.js';
 import { query } from '../../db/pool';
-import { getSupportedLocales } from '../../i18n';
 import { getLanguageInfo, getPrimaryLocales } from '../../i18n/languages-config';
+import { t } from '../../i18n';
 
 export default {
   name: Events.GuildCreate,
@@ -59,8 +60,8 @@ export default {
       console.log(`\x1b[34m  Members: ${guild.memberCount}\x1b[0m`);
       console.log(`\x1b[34m  Owner: ${guild.ownerId}\x1b[0m`);
 
-      // Send welcome message
-      await sendWelcomeMessage(guild);
+      // Send welcome message (Step 1: Choose Language)
+      await sendSetupStep1(guild);
 
     } catch (error) {
       console.error('[GUILD CREATE] Error adding guild to database:', error);
@@ -69,11 +70,11 @@ export default {
 };
 
 /**
- * Send welcome message to the guild
+ * Send Step 1: Choose Language
  */
-async function sendWelcomeMessage(guild: Guild): Promise<void> {
+async function sendSetupStep1(guild: Guild): Promise<void> {
   try {
-    // Find who invited the bot (check audit logs)
+    // Find who invited the bot
     let inviter = null;
     if (guild.members.me?.permissions.has(PermissionFlagsBits.ViewAuditLog)) {
       try {
@@ -81,29 +82,23 @@ async function sendWelcomeMessage(guild: Guild): Promise<void> {
           type: AuditLogEvent.BotAdd,
           limit: 10,
         });
-
         const botAddLog = auditLogs.entries.find(
           entry => entry.target?.id === guild.client.user.id
         );
-
-        if (botAddLog) {
-          inviter = botAddLog.executor;
-        }
+        if (botAddLog) inviter = botAddLog.executor;
       } catch (error) {
         console.error('[GUILD CREATE] Error fetching audit logs:', error);
       }
     }
 
-    // Find welcome channel (system channel or first channel bot can send to)
-    let channel = guild.systemChannel;
-
+    // Find welcome channel
+    let channel: TextChannel | null = guild.systemChannel as TextChannel;
     if (!channel || !channel.permissionsFor(guild.members.me!)?.has(PermissionFlagsBits.SendMessages)) {
-      // Find first text channel where bot can send messages
       const textChannels = guild.channels.cache.filter(
         ch => ch.isTextBased() &&
              ch.permissionsFor(guild.members.me!)?.has(PermissionFlagsBits.SendMessages)
       );
-      channel = textChannels.first() as any;
+      channel = textChannels.first() as TextChannel;
     }
 
     if (!channel) {
@@ -111,44 +106,36 @@ async function sendWelcomeMessage(guild: Guild): Promise<void> {
       return;
     }
 
-    // Get default locale and prefix
-    const defaultLocale = process.env.DEFAULT_LOCALE || 'en-US';
-    const defaultPrefix = process.env.BOT_PREFIX || '!';
+    // Get guild's preferred locale or default
+    const guildLocale = guild.preferredLocale || process.env.DEFAULT_LOCALE || 'en-US';
+    const locale = guildLocale as any;
 
-    // Create welcome embed
+    // Create Step 1 embed with beautiful design
+    const greeting = inviter
+      ? t('setup.step1.greeting', { inviter: inviter.toString(), guildName: guild.name }, locale)
+      : t('setup.step1.greeting_no_inviter', { guildName: guild.name }, locale);
+
     const embed = new EmbedBuilder()
-      .setColor(0x5865F2)
-      .setTitle('👋 Thank you for adding WhiteCat Bot!')
+      .setColor(0x5865F2) // Discord Blurple
+      .setTitle(t('setup.step1.title', {}, locale))
       .setDescription(
-        `${inviter ? `Hey ${inviter}! ` : ''}Thanks for inviting me to **${guild.name}**!\n\n` +
-        `I'm here to bring fun and utility to your server. Before we get started, let's set up a few things:\n\n` +
-        `**Current Settings:**\n` +
-        `🌐 Language: \`${defaultLocale}\`\n` +
-        `⚙️ Prefix: \`${defaultPrefix}\`\n\n` +
-        `You can customize these settings using the buttons below!`
+        `${greeting}\n\n` +
+        `${t('setup.step1.description', {}, locale)}\n\n` +
+        `${'─'.repeat(40)}\n\n` +
+        `${t('setup.step1.step_label', {}, locale)}\n\n` +
+        `${t('setup.step1.language_prompt', {}, locale)}\n\n` +
+        `${t('setup.step1.default_note', { locale: guildLocale }, locale)}\n` +
+        `${t('setup.step1.can_change', {}, locale)}`
       )
-      .addFields(
-        {
-          name: '📚 Quick Start',
-          value:
-            `• Use slash commands: \`/help\`\n` +
-            `• Use prefix commands: \`${defaultPrefix}help\`\n` +
-            `• Have fun with \`/hug\`, \`/pat\`, \`/dance\` and more!`,
-          inline: false
-        },
-        {
-          name: '🔧 Setup',
-          value: 'Click the buttons below to customize your server settings!',
-          inline: false
-        }
-      )
-      .setFooter({ text: 'WhiteCat Bot v4.1' })
+      .setThumbnail(guild.iconURL() || null)
+      .setFooter({
+        text: t('setup.step1.footer', {}, locale),
+        iconURL: channel.client.user.displayAvatarURL()
+      })
       .setTimestamp();
 
-    // Get primary locales from config (auto-updated when adding new languages)
+    // Get primary locales
     const primaryLocales = getPrimaryLocales();
-
-    // Create language options from primary locales
     const languageOptions = primaryLocales.map(locale => {
       const info = getLanguageInfo(locale);
       return {
@@ -161,21 +148,21 @@ async function sendWelcomeMessage(guild: Guild): Promise<void> {
 
     // Create select menu for language
     const languageSelect = new StringSelectMenuBuilder()
-      .setCustomId(`setup_language_${guild.id}`)
-      .setPlaceholder('🌐 Select Language')
+      .setCustomId(`setup_step1_language_${guild.id}`)
+      .setPlaceholder(t('setup.step1.select_placeholder', {}, locale))
       .addOptions(languageOptions);
 
-    // Create button for prefix setup
-    const prefixButton = new ButtonBuilder()
-      .setCustomId(`setup_prefix_${guild.id}`)
-      .setLabel('⚙️ Change Prefix')
-      .setStyle(ButtonStyle.Primary);
+    // Create button for default (use server locale)
+    const defaultButton = new ButtonBuilder()
+      .setCustomId(`setup_step1_default_${guild.id}`)
+      .setLabel(t('setup.step1.button_default', {}, locale))
+      .setStyle(ButtonStyle.Secondary);
 
     const row1 = new ActionRowBuilder<StringSelectMenuBuilder>()
       .addComponents(languageSelect);
 
     const row2 = new ActionRowBuilder<ButtonBuilder>()
-      .addComponents(prefixButton);
+      .addComponents(defaultButton);
 
     // Send message
     await channel.send({
@@ -184,9 +171,83 @@ async function sendWelcomeMessage(guild: Guild): Promise<void> {
       components: [row1, row2],
     });
 
-    console.log(`\x1b[32m[GUILD] Welcome message sent to: ${channel.name}\x1b[0m`);
+    console.log(`\x1b[32m[GUILD] Setup Step 1 sent to: ${channel.name}\x1b[0m`);
 
   } catch (error) {
-    console.error('[GUILD CREATE] Error sending welcome message:', error);
+    console.error('[GUILD CREATE] Error sending setup step 1:', error);
   }
+}
+
+/**
+ * Create Step 2 embed (Setup Prefix)
+ */
+export function createSetupStep2Embed(guildName: string, selectedLocale: string, client: any): EmbedBuilder {
+  const defaultPrefix = process.env.BOT_PREFIX || '!';
+  const locale = selectedLocale as any;
+  const languageInfo = getLanguageInfo(selectedLocale);
+
+  return new EmbedBuilder()
+    .setColor(0x57F287) // Green - Success
+    .setTitle(t('setup.step2.title', {}, locale))
+    .setDescription(
+      `${t('setup.step2.language_set', { language: `${languageInfo.label} ${languageInfo.emoji}` }, locale)}\n\n` +
+      `${'─'.repeat(40)}\n\n` +
+      `${t('setup.step2.step_label', {}, locale)}\n\n` +
+      `${t('setup.step2.prefix_info', { prefix: defaultPrefix }, locale)}\n\n` +
+      `${t('setup.step2.default_prefix', { prefix: defaultPrefix }, locale)}\n` +
+      `${t('setup.step2.custom_option', { guildName }, locale)}\n\n` +
+      `${t('setup.step2.note_slash', {}, locale)}`
+    )
+    .setFooter({
+      text: t('setup.step2.footer', {}, locale),
+      iconURL: client.user.displayAvatarURL()
+    })
+    .setTimestamp();
+}
+
+/**
+ * Create Step 3 embed (Complete)
+ */
+export function createSetupCompleteEmbed(
+  guildName: string,
+  locale: string,
+  client: any,
+  customPrefix?: string
+): EmbedBuilder {
+  const defaultPrefix = process.env.BOT_PREFIX || '!';
+  const loc = locale as any;
+  const languageInfo = getLanguageInfo(locale);
+  const activePrefix = customPrefix || defaultPrefix;
+
+  const embed = new EmbedBuilder()
+    .setColor(0x57F287) // Green - Success
+    .setTitle(t('setup.step3.title', {}, loc))
+    .setDescription(
+      `${t('setup.step3.description', { guildName }, loc)}\n\n` +
+      `${'─'.repeat(40)}\n\n` +
+      `**${t('setup.step3.summary_title', {}, loc)}**\n` +
+      `${t('setup.step3.language_label', {}, loc)}: **${languageInfo.label} ${languageInfo.emoji}**\n` +
+      `${t('setup.step3.prefix_default_label', {}, loc)}: \`${defaultPrefix}\` ${t('setup.step3.prefix_note', {}, loc)}\n` +
+      (customPrefix ? `${t('setup.step3.prefix_custom_label', {}, loc)}: \`${customPrefix}\`\n` : '') +
+      `\n${'─'.repeat(40)}\n`
+    )
+    .addFields(
+      {
+        name: `${t('setup.step3.getting_started_title', {}, loc)}`,
+        value: t('setup.step3.getting_started_commands', { prefix: activePrefix }, loc),
+        inline: false
+      },
+      {
+        name: `${t('setup.step3.fun_commands_title', {}, loc)}`,
+        value: t('setup.step3.fun_commands', {}, loc),
+        inline: false
+      }
+    )
+    .setFooter({
+      text: t('setup.step3.footer', {}, loc),
+      iconURL: client.user.displayAvatarURL()
+    })
+    .setTimestamp();
+
+  return embed;
 }
