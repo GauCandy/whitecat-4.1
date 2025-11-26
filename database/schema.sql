@@ -188,9 +188,10 @@ CREATE INDEX idx_auto_response_blocked_channels_guild_id ON auto_response_blocke
 -- ==========================================
 CREATE TABLE command_channel_restrictions (
   id SERIAL PRIMARY KEY,
-  guild_id BIGINT NOT NULL REFERENCES guilds(id) ON DELETE CASCADE,
-  channel_id VARCHAR(20) NOT NULL,               -- Channel bị hạn chế
-  command_name VARCHAR(100) NOT NULL,            -- Lệnh bị block
+  guild_id VARCHAR(20) NOT NULL REFERENCES guilds(guild_id) ON DELETE CASCADE,  -- Discord Guild ID
+  channel_id VARCHAR(20) NOT NULL,               -- Discord Channel ID bị hạn chế
+  command_name VARCHAR(100) NOT NULL,            -- Tên lệnh bị block (e.g., 'gamble', 'giveaway')
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   UNIQUE(guild_id, channel_id, command_name)
 );
 

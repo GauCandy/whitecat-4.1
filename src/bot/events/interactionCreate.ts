@@ -18,6 +18,7 @@ import {
 import { commands } from '../handlers/commands';
 import { t } from '../../i18n';
 import { checkTermsAccepted } from '../middleware/termsCheck';
+import { checkSlashCommandRestriction } from '../middleware/commandRestrictions';
 import { query } from '../../db/pool';
 import { createSetupStep2Embed, createSetupCompleteEmbed } from './guildCreate';
 import { getLanguageInfo } from '../../i18n/languages-config';
@@ -81,6 +82,12 @@ async function handleCommand(interaction: any) {
       if (!termsAccepted) {
         return; // Terms embed already sent by middleware
       }
+    }
+
+    // Check command channel restrictions
+    const isRestricted = await checkSlashCommandRestriction(interaction, interaction.commandName, locale);
+    if (isRestricted) {
+      return; // Restriction message already sent
     }
 
     // Execute command

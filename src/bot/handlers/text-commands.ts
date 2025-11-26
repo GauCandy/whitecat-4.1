@@ -7,6 +7,7 @@ import { Client, Collection, Message } from 'discord.js';
 import { TextCommand } from '../types/text-command';
 import { query } from '../../db/pool';
 import { getDefaultLocale } from '../../i18n';
+import { checkPrefixCommandRestriction } from '../middleware/commandRestrictions';
 import fs from 'fs';
 import path from 'path';
 
@@ -200,6 +201,12 @@ export async function handleTextCommand(message: Message): Promise<void> {
   const locale = message.guild
     ? await getGuildLocale(message.guild.id)
     : getDefaultLocale();
+
+  // Check command channel restrictions
+  const isRestricted = await checkPrefixCommandRestriction(message, command.name, locale);
+  if (isRestricted) {
+    return; // Restriction message already sent and will auto-delete
+  }
 
   // Execute command
   try {
