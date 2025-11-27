@@ -24,8 +24,8 @@ function loadCommandsFromDirectory(dirPath: string): void {
     if (stat.isDirectory()) {
       // Recursively load from subdirectory
       loadCommandsFromDirectory(itemPath);
-    } else if (item.endsWith('.ts') || item.endsWith('.js')) {
-      // Load command file
+    } else if ((item.endsWith('.ts') || item.endsWith('.js')) && !item.endsWith('.d.ts')) {
+      // Load command file (skip .d.ts declaration files)
       const commandExport = require(itemPath).default;
 
       // Handle both single command and array of commands

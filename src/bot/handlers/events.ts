@@ -16,7 +16,7 @@ export async function loadEvents(client: Client): Promise<void> {
   }
 
   const eventFiles = fs.readdirSync(eventsPath).filter(file =>
-    file.endsWith('.ts') || file.endsWith('.js')
+    (file.endsWith('.ts') || file.endsWith('.js')) && !file.endsWith('.d.ts')
   );
 
   console.log('\x1b[33mLoading Discord events...\x1b[0m');

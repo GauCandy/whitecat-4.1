@@ -3,7 +3,10 @@
   "version": "4.1.0",
   "description": "WhiteCat Discord Bot with Economy, Giveaways, and Web Dashboard",
   "scripts": {
-    "build": "tsc",
+    "clean": "powershell -Command \"if (Test-Path dist) { Remove-Item -Recurse -Force dist }\"",
+    "build:css": "node node_modules/tailwindcss/lib/cli.js -i src/web/public/css/tailwind.css -o dist/web/public/css/styles.css --minify",
+    "copy:assets": "powershell -Command \"New-Item -ItemType Directory -Force dist/web/views, dist/web/public/css, dist/web/public/js; Copy-Item src/web/views/* dist/web/views/ -Force; Copy-Item src/web/public/css/* dist/web/public/css/ -Force; Copy-Item src/web/public/js/* dist/web/public/js/ -Force\"",
+    "build": "npm run clean && tsc && npm run build:css && npm run copy:assets",
     "dev": "concurrently -n \"BOT,WEB\" -c \"cyan,magenta\" \"npm run dev:bot\" \"npm run dev:web\"",
     "dev:bot": "ts-node src/bot/index.ts",
     "dev:web": "ts-node src/web/index.ts",
@@ -18,14 +21,23 @@
     "db:clear": "ts-node src/db/clear.ts"
   },
   "dependencies": {
+    "@types/cookie-parser": "^1.4.10",
+    "@types/express": "^5.0.5",
+    "@types/express-session": "^1.18.2",
+    "cookie-parser": "^1.4.7",
     "discord.js": "^14.25.1",
     "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
     "pg": "^8.11.3"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
     "@types/pg": "^8.15.6",
+    "autoprefixer": "^10.4.22",
     "concurrently": "^9.2.1",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.17",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   },

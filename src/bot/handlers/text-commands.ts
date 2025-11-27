@@ -29,7 +29,7 @@ export async function loadTextCommands(client: Client): Promise<void> {
 
   for (const category of categories) {
     const categoryPath = path.join(commandsPath, category);
-    const commandFiles = fs.readdirSync(categoryPath).filter(file => file.endsWith('.ts') || file.endsWith('.js'));
+    const commandFiles = fs.readdirSync(categoryPath).filter(file => (file.endsWith('.ts') || file.endsWith('.js')) && !file.endsWith('.d.ts'));
 
     for (const file of commandFiles) {
       const filePath = path.join(categoryPath, file);
