@@ -87,6 +87,7 @@ router.get('/callback', async (req, res) => {
   }
 });
 
+
 // Logout
 router.get('/logout', (req, res) => {
   req.session.destroy((err) => {
