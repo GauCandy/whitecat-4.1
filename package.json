@@ -6,7 +6,7 @@
     "clean": "powershell -Command \"if (Test-Path dist) { Remove-Item -Recurse -Force dist }\"",
     "build:css": "node node_modules/tailwindcss/lib/cli.js -i src/web/public/css/tailwind.css -o dist/web/public/css/styles.css --minify",
     "copy:assets": "powershell -Command \"New-Item -ItemType Directory -Force dist/web/views, dist/web/public/css, dist/web/public/js; Copy-Item src/web/views/* dist/web/views/ -Force; Copy-Item src/web/public/css/* dist/web/public/css/ -Force; Copy-Item src/web/public/js/* dist/web/public/js/ -Force\"",
-    "build": "npm run clean && tsc && npm run build:css && npm run copy:assets",
+    "build": "npm run clean && tsc && npm run copy:assets",
     "dev": "concurrently -n \"BOT,WEB\" -c \"cyan,magenta\" \"npm run dev:bot\" \"npm run dev:web\"",
     "dev:bot": "ts-node src/bot/index.ts",
     "dev:web": "ts-node src/web/index.ts",

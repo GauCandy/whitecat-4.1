@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OAuth Success - WhiteCat Bot</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="stylesheet" href="/css/minimal.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Starry Sky Background (created by JavaScript) -->
+
+  <!-- Main Content -->
+  <div class="relative z-10 min-h-screen flex flex-col items-center justify-center p-8">
+
+    <div class="text-center max-w-2xl">
+
+      <!-- Success Icon -->
+      <div class="text-8xl mb-8">✅</div>
+
+      <!-- Success Message -->
+      <h1 class="text-5xl md:text-6xl font-black mb-4 text-white">
+        Xác thực thành công!
+      </h1>
+
+      <p class="text-xl text-gray-400 mb-4">
+        Xin chào, <span class="text-white font-semibold">{{username}}</span>
+      </p>
+
+      <p class="text-lg text-gray-500 mb-12">
+        Bạn có thể rời khỏi trang web này hoặc tiếp tục khám phá
+      </p>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+
+        <a href="/dashboard"
+           class="px-8 py-4 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 transition-colors">
+          Truy cập Dashboard
+        </a>
+
+        <a href="/api/support-invite"
+           target="_blank"
+           class="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-black transition-colors">
+          Tham gia Server Hỗ trợ
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

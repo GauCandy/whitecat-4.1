@@ -3,7 +3,7 @@
  * Change the bot's prefix for this server
  */
 
-import { SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
+import { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } from 'discord.js';
 import { Command } from '../../types/command';
 import { t, getAllLocalizations } from '../../../i18n';
 import { query } from '../../../db/pool';
@@ -28,7 +28,7 @@ const command: Command = {
     if (!interaction.guild) {
       await interaction.reply({
         content: t('error.guild_only', {}, locale as any),
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
@@ -39,7 +39,7 @@ const command: Command = {
     if (newPrefix.length === 0) {
       await interaction.reply({
         content: t('admin.prefix.empty_error', {}, locale as any),
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
@@ -47,7 +47,7 @@ const command: Command = {
     if (newPrefix.length > 10) {
       await interaction.reply({
         content: t('admin.prefix.too_long_error', {}, locale as any),
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
@@ -67,7 +67,7 @@ const command: Command = {
       console.error('[COMMAND] Error updating prefix:', error);
       await interaction.reply({
         content: t('error.unknown', {}, locale as any),
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   },

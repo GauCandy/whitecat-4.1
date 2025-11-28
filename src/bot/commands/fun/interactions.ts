@@ -7,7 +7,8 @@ import {
   SlashCommandBuilder,
   EmbedBuilder,
   ApplicationIntegrationType,
-  InteractionContextType
+  InteractionContextType,
+  MessageFlags
 } from 'discord.js';
 import { Command } from '../../types/command';
 import { fetchNekoGif, INTERACTION_ACTIONS } from '../../utils/nekobest';
@@ -107,7 +108,7 @@ const interactionCommands: Command[] = INTERACTION_ACTIONS.map(action => ({
 
         await interaction.reply({
           content: message,
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
         return;
       }

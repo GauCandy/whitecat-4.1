@@ -4,12 +4,15 @@
  */
 
 import { Router } from 'express';
+import crypto from 'crypto';
 import { buildOAuth2URL } from '../../bot/utils/oauth';
+import { upsertUser, upsertOAuthTokens } from '../services/userService';
+import pool from '../../db/pool';
 
 const router = Router();
 
 // Redirect to Discord OAuth
-router.get('/login', (req, res) => {
+router.get('/discord', (req, res) => {
   try {
     const authUrl = buildOAuth2URL();
     res.redirect(authUrl);
@@ -67,20 +70,56 @@ router.get('/callback', async (req, res) => {
 
     const userData: any = await userResponse.json();
 
-    // Store user data in session
-    (req.session as any).user = {
-      id: userData.id,
-      username: userData.username,
-      discriminator: userData.discriminator,
-      avatar: userData.avatar,
-      accessToken: tokenData.access_token,
-      refreshToken: tokenData.refresh_token,
-    };
+    // Save user to database
+    try {
+      const userId = await upsertUser({
+        discordId: userData.id,
+        username: userData.username,
+        avatar: userData.avatar,
+      });
 
-    console.log(`\x1b[32m[AUTH] User logged in: ${userData.username}#${userData.discriminator}\x1b[0m`);
+      // Save OAuth tokens to database
+      await upsertOAuthTokens(userId, {
+        accessToken: tokenData.access_token,
+        refreshToken: tokenData.refresh_token,
+        expiresIn: tokenData.expires_in,
+      });
 
-    // Redirect to dashboard
-    res.redirect('/dashboard');
+      // Generate session token
+      const sessionToken = crypto.randomBytes(32).toString('hex');
+      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+
+      // Create session in database
+      await pool.query(
+        `INSERT INTO web_sessions (user_id, session_token, expires_at, ip_address, user_agent)
+         VALUES ($1, $2, $3, $4, $5)
+         ON CONFLICT (session_token) DO UPDATE SET
+           expires_at = EXCLUDED.expires_at`,
+        [
+          userId,
+          sessionToken,
+          expiresAt,
+          req.ip || req.socket.remoteAddress,
+          req.get('user-agent') || 'Unknown'
+        ]
+      );
+
+      // Set session cookie
+      res.cookie('session_token', sessionToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        sameSite: 'lax',
+      });
+
+      console.log(`\x1b[32m[AUTH] User logged in & saved: ${userData.username}#${userData.discriminator || '0'}\x1b[0m`);
+
+      // Redirect to success page
+      res.redirect('/auth/success');
+    } catch (dbError) {
+      console.error('[AUTH] Database error:', dbError);
+      res.redirect('/?error=database_error');
+    }
   } catch (error) {
     console.error('[AUTH] Callback error:', error);
     res.redirect('/?error=auth_failed');
@@ -88,14 +127,62 @@ router.get('/callback', async (req, res) => {
 });
 
 
-// Logout
-router.get('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      console.error('[AUTH] Logout error:', err);
+// OAuth Success Page
+router.get('/success', async (req, res) => {
+  try {
+    const sessionToken = req.cookies?.session_token;
+
+    if (!sessionToken) {
+      return res.redirect('/login');
     }
+
+    // Get user from session
+    const result = await pool.query(
+      `SELECT u.username, u.discord_id, u.avatar
+       FROM web_sessions ws
+       JOIN users u ON ws.user_id = u.id
+       WHERE ws.session_token = $1 AND ws.expires_at > CURRENT_TIMESTAMP`,
+      [sessionToken]
+    );
+
+    if (result.rows.length === 0) {
+      return res.redirect('/login');
+    }
+
+    const user = result.rows[0];
+
+    res.render('auth-success', {
+      username: user.username,
+      CLIENT_ID: process.env.CLIENT_ID,
+      GUILD_ID_SUPPORT: process.env.GUILD_ID_SUPPORT,
+    });
+  } catch (error) {
+    console.error('[AUTH] Error in success page:', error);
+    res.redirect('/login');
+  }
+});
+
+// Logout
+router.get('/logout', async (req, res) => {
+  try {
+    const sessionToken = req.cookies?.session_token;
+
+    if (sessionToken) {
+      // Delete session from database
+      await pool.query(
+        'DELETE FROM web_sessions WHERE session_token = $1',
+        [sessionToken]
+      );
+    }
+
+    // Clear cookie
+    res.clearCookie('session_token');
     res.redirect('/');
-  });
+  } catch (error) {
+    console.error('[AUTH] Logout error:', error);
+    res.clearCookie('session_token');
+    res.redirect('/');
+  }
 });
 
 /**

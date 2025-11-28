@@ -92,11 +92,58 @@ async function startBot() {
       throw new Error('DISCORD_TOKEN not found in .env file');
     }
 
-    await client.login(token);
+    // Wait for bot to be ready
+    await new Promise<void>((resolve) => {
+      client.once('ready', async () => {
+        log('\n==========================================', colors.cyan);
+        log('Discord Bot is ready!', colors.green);
+        log('==========================================\n', colors.cyan);
 
-    log('\n==========================================', colors.cyan);
-    log('Discord Bot is ready!', colors.green);
-    log('==========================================\n', colors.cyan);
+        // Auto-generate support server invite if configured
+        const supportGuildId = process.env.GUILD_ID_SUPPORT;
+        if (supportGuildId) {
+          try {
+            const guild = client.guilds.cache.get(supportGuildId);
+            if (guild) {
+              // Find a suitable channel to create invite
+              const channel = guild.channels.cache.find(
+                (ch) => (ch.type === 0 || ch.type === 2) && ch.permissionsFor(guild.members.me!)?.has('CreateInstantInvite')
+              );
+
+              if (channel && 'createInvite' in channel) {
+                const invite = await channel.createInvite({
+                  maxAge: 0, // Never expires
+                  maxUses: 0, // Unlimited uses
+                  unique: false,
+                });
+
+                // Save to database
+                await query(
+                  `INSERT INTO settings (key, value, updated_at)
+                   VALUES ($1, $2, CURRENT_TIMESTAMP)
+                   ON CONFLICT (key)
+                   DO UPDATE SET value = $2, updated_at = CURRENT_TIMESTAMP`,
+                  ['support_server_invite', invite.url]
+                );
+
+                log(`✓ Support server invite created: ${invite.url}`, colors.green);
+              } else {
+                log('⚠️  No suitable channel found for support invite', colors.yellow);
+              }
+            } else {
+              log('⚠️  Support server not found in cache', colors.yellow);
+            }
+          } catch (error) {
+            log('⚠️  Failed to create support server invite:', colors.yellow);
+            console.error(error);
+          }
+        }
+
+        resolve();
+      });
+
+      client.login(token);
+    });
 
   } catch (error) {
     log('\n==========================================', colors.red);
@@ -167,5 +214,5 @@ process.on('unhandledRejection', (reason, promise) => {
   shutdown('UNHANDLED_REJECTION');
 });
 
-// Start the bot
-startBot();
+// Start the bot and export the promise
+export const botReady = startBot();

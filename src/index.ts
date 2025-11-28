@@ -1,7 +1,7 @@
 /**
  * WhiteCat Bot - Main Entry Point
  * Version 4.1
- * Starts both Discord Bot and Web Server
+ * Starts both Discord Bot and Web Server as separate processes
  */
 
 import { spawn } from 'child_process';

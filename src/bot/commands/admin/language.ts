@@ -11,6 +11,7 @@ import {
   StringSelectMenuBuilder,
   StringSelectMenuOptionBuilder,
   ComponentType,
+  MessageFlags,
 } from 'discord.js';
 import { Command } from '../../types/command';
 import { t, getAllLocalizations } from '../../../i18n';
@@ -29,7 +30,7 @@ const command: Command = {
     if (!interaction.guild) {
       await interaction.reply({
         content: t('error.guild_only', {}, locale as any),
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
@@ -91,7 +92,7 @@ const command: Command = {
         ) {
           await selectInteraction.reply({
             content: t('error.permission_denied', {}, locale as any),
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
           });
           return;
         }
@@ -122,7 +123,7 @@ const command: Command = {
           console.error('[COMMAND] Error updating language:', error);
           await selectInteraction.reply({
             content: t('error.unknown', {}, locale as any),
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
           });
         }
       });
