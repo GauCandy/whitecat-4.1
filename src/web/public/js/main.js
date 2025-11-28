@@ -48,23 +48,91 @@ function createStarryBackground() {
     starsContainer.appendChild(star);
   }
 
-  // Generate shooting stars
-  for (let i = 0; i < 4; i++) {
-    const shootingStar = document.createElement('div');
-    shootingStar.className = 'shooting-star';
+  // Generate shooting stars with trail effect
+  setInterval(() => {
+    if (Math.random() < 0.05) { // 5% chance every interval
+      createShootingStar(starsContainer);
+    }
+  }, 100);
+}
 
-    // Random starting position (top right area)
-    shootingStar.style.top = Math.random() * 40 + '%';
-    shootingStar.style.right = Math.random() * 30 + '%';
+/**
+ * Create shooting star with LCD ghosting trail effect
+ */
+function createShootingStar(container) {
+  // Starting position (top right area)
+  const startX = window.innerWidth * (0.7 + Math.random() * 0.3);
+  const startY = window.innerHeight * (Math.random() * 0.4);
 
-    // Random animation
-    const delay = Math.random() * 20;
-    const duration = Math.random() * 2 + 2;
-    shootingStar.style.animation = `shootingStar ${duration}s linear infinite`;
-    shootingStar.style.animationDelay = `${delay}s`;
+  // Random speed: fast (1-1.5s) or slow (2-3s)
+  const isFast = Math.random() > 0.5;
+  const duration = isFast
+    ? 1000 + Math.random() * 500  // Fast: 1-1.5 seconds
+    : 2000 + Math.random() * 1000; // Slow: 2-3 seconds
+  const distance = 800;
 
-    starsContainer.appendChild(shootingStar);
-  }
+  // Create the bright dot
+  const star = document.createElement('div');
+  star.className = 'shooting-star-head';
+  star.style.left = startX + 'px';
+  star.style.top = startY + 'px';
+  container.appendChild(star);
+
+  // Trail array to store ghost positions
+  const trails = [];
+  const maxTrails = 15;
+  let frame = 0;
+  const totalFrames = duration / 16; // 60fps
+
+  const animate = () => {
+    frame++;
+    const progress = frame / totalFrames;
+
+    if (progress >= 1) {
+      // Remove star and trails when done
+      star.remove();
+      trails.forEach(t => t.remove());
+      return;
+    }
+
+    // Update star position
+    const currentX = startX - (distance * progress);
+    const currentY = startY + (distance * progress);
+    star.style.left = currentX + 'px';
+    star.style.top = currentY + 'px';
+
+    // Create trail ghost every frame for continuous trail
+    const trail = document.createElement('div');
+    trail.className = 'shooting-star-trail';
+    trail.style.left = currentX + 'px';
+    trail.style.top = currentY + 'px';
+    container.appendChild(trail);
+    trails.push(trail);
+
+    // Fade out trail
+    let trailOpacity = 0.9;
+    const fadeOut = setInterval(() => {
+      trailOpacity -= 0.08;
+      if (trailOpacity <= 0) {
+        clearInterval(fadeOut);
+        trail.remove();
+        const index = trails.indexOf(trail);
+        if (index > -1) trails.splice(index, 1);
+      } else {
+        trail.style.opacity = trailOpacity;
+      }
+    }, 25);
+
+    // Limit number of trails
+    if (trails.length > 30) {
+      const oldTrail = trails.shift();
+      if (oldTrail) oldTrail.remove();
+    }
+
+    requestAnimationFrame(animate);
+  };
+
+  requestAnimationFrame(animate);
 }
 
 /**
