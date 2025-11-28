@@ -48,91 +48,183 @@ function createStarryBackground() {
     starsContainer.appendChild(star);
   }
 
-  // Generate shooting stars with trail effect
+  // Create canvas for shooting stars
+  const canvas = document.createElement('canvas');
+  canvas.className = 'shooting-stars-canvas';
+  canvas.style.position = 'fixed';
+  canvas.style.top = '0';
+  canvas.style.left = '0';
+  canvas.style.width = '100%';
+  canvas.style.height = '100%';
+  canvas.style.pointerEvents = 'none';
+  canvas.style.zIndex = '2';
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  document.body.appendChild(canvas);
+
+  const ctx = canvas.getContext('2d');
+  const shootingStars = [];
+
+  // Resize canvas on window resize
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  // Create shooting stars periodically
   setInterval(() => {
-    if (Math.random() < 0.05) { // 5% chance every interval
-      createShootingStar(starsContainer);
+    if (Math.random() < 0.05 && shootingStars.length < 5) {
+      shootingStars.push(new ShootingStar());
     }
   }, 100);
+
+  // Animation loop
+  function animateShootingStars() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = shootingStars.length - 1; i >= 0; i--) {
+      const star = shootingStars[i];
+      star.update();
+      star.draw(ctx);
+
+      if (star.isDead()) {
+        shootingStars.splice(i, 1);
+      }
+    }
+
+    requestAnimationFrame(animateShootingStars);
+  }
+
+  animateShootingStars();
 }
 
 /**
- * Create shooting star with LCD ghosting trail effect
+ * ShootingStar class - Physics-based two-particle system
+ * Head particle leads, tail particle follows with spring force
  */
-function createShootingStar(container) {
-  // Starting position (top right area)
-  const startX = window.innerWidth * (0.7 + Math.random() * 0.3);
-  const startY = window.innerHeight * (Math.random() * 0.4);
+class ShootingStar {
+  constructor() {
+    // Starting position (top-right area)
+    this.startX = window.innerWidth * (0.7 + Math.random() * 0.3);
+    this.startY = window.innerHeight * (Math.random() * 0.4);
 
-  // Random speed: fast (1-1.5s) or slow (2-3s)
-  const isFast = Math.random() > 0.5;
-  const duration = isFast
-    ? 1000 + Math.random() * 500  // Fast: 1-1.5 seconds
-    : 2000 + Math.random() * 1000; // Slow: 2-3 seconds
-  const distance = 800;
+    // Random speed variation
+    const isFast = Math.random() > 0.5;
+    this.duration = isFast
+      ? 1250 + Math.random() * 500  // 1.25-1.75s (fast)
+      : 2500 + Math.random() * 1000; // 2.5-3.5s (slow)
 
-  // Create the bright dot
-  const star = document.createElement('div');
-  star.className = 'shooting-star-head';
-  star.style.left = startX + 'px';
-  star.style.top = startY + 'px';
-  container.appendChild(star);
+    // Distance to travel (exit viewport)
+    const diagonal = Math.sqrt(window.innerWidth ** 2 + window.innerHeight ** 2);
+    this.distance = diagonal * 1.2;
 
-  // Trail array to store ghost positions
-  const trails = [];
-  const maxTrails = 15;
-  let frame = 0;
-  const totalFrames = duration / 16; // 60fps
+    // Head particle (leads)
+    this.headX = this.startX;
+    this.headY = this.startY;
 
-  const animate = () => {
-    frame++;
-    const progress = frame / totalFrames;
+    // Tail particle (follows with lag)
+    this.tailX = this.startX;
+    this.tailY = this.startY;
 
+    // Spring constant - controls how tightly tail follows head
+    this.springStrength = 0.03; // Lower = longer trail
+
+    this.startTime = Date.now();
+    this.alive = true;
+  }
+
+  update() {
+    const elapsed = Date.now() - this.startTime;
+    const progress = Math.min(elapsed / this.duration, 1);
+
+    // Update head position (moves along diagonal path)
+    this.headX = this.startX - (this.distance * progress);
+    this.headY = this.startY + (this.distance * progress);
+
+    // Tail follows head with spring force (creates natural trailing)
+    const dx = this.headX - this.tailX;
+    const dy = this.headY - this.tailY;
+
+    this.tailX += dx * this.springStrength;
+    this.tailY += dy * this.springStrength;
+
+    // Mark as dead when head exits viewport and duration complete
     if (progress >= 1) {
-      // Remove star and trails when done
-      star.remove();
-      trails.forEach(t => t.remove());
-      return;
+      this.alive = false;
     }
+  }
 
-    // Update star position
-    const currentX = startX - (distance * progress);
-    const currentY = startY + (distance * progress);
-    star.style.left = currentX + 'px';
-    star.style.top = currentY + 'px';
+  draw(ctx) {
+    // Calculate trail distance for alpha/brightness
+    const trailLength = Math.sqrt(
+      (this.headX - this.tailX) ** 2 +
+      (this.headY - this.tailY) ** 2
+    );
 
-    // Create trail ghost every frame for continuous trail
-    const trail = document.createElement('div');
-    trail.className = 'shooting-star-trail';
-    trail.style.left = currentX + 'px';
-    trail.style.top = currentY + 'px';
-    container.appendChild(trail);
-    trails.push(trail);
+    // Draw gradient line from tail to head
+    const gradient = ctx.createLinearGradient(
+      this.tailX, this.tailY,
+      this.headX, this.headY
+    );
 
-    // Fade out trail
-    let trailOpacity = 0.9;
-    const fadeOut = setInterval(() => {
-      trailOpacity -= 0.08;
-      if (trailOpacity <= 0) {
-        clearInterval(fadeOut);
-        trail.remove();
-        const index = trails.indexOf(trail);
-        if (index > -1) trails.splice(index, 1);
-      } else {
-        trail.style.opacity = trailOpacity;
-      }
-    }, 25);
+    // Tail (dimmest)
+    gradient.addColorStop(0, 'rgba(150, 180, 255, 0)');
+    gradient.addColorStop(0.2, 'rgba(200, 220, 255, 0.15)');
+    gradient.addColorStop(0.5, 'rgba(220, 235, 255, 0.4)');
+    gradient.addColorStop(0.8, 'rgba(240, 248, 255, 0.7)');
+    // Head (brightest)
+    gradient.addColorStop(1, 'rgba(255, 255, 255, 1)');
 
-    // Limit number of trails
-    if (trails.length > 30) {
-      const oldTrail = trails.shift();
-      if (oldTrail) oldTrail.remove();
-    }
+    // Draw multiple passes for glow effect
+    ctx.strokeStyle = gradient;
+    ctx.lineCap = 'round';
 
-    requestAnimationFrame(animate);
-  };
+    // Outer glow (widest, faintest)
+    ctx.lineWidth = 8;
+    ctx.globalAlpha = 0.3;
+    ctx.beginPath();
+    ctx.moveTo(this.tailX, this.tailY);
+    ctx.lineTo(this.headX, this.headY);
+    ctx.stroke();
 
-  requestAnimationFrame(animate);
+    // Middle glow
+    ctx.lineWidth = 4;
+    ctx.globalAlpha = 0.6;
+    ctx.beginPath();
+    ctx.moveTo(this.tailX, this.tailY);
+    ctx.lineTo(this.headX, this.headY);
+    ctx.stroke();
+
+    // Core trail
+    ctx.lineWidth = 2;
+    ctx.globalAlpha = 1;
+    ctx.beginPath();
+    ctx.moveTo(this.tailX, this.tailY);
+    ctx.lineTo(this.headX, this.headY);
+    ctx.stroke();
+
+    // Reset alpha
+    ctx.globalAlpha = 1;
+
+    // Draw bright head particle
+    const headGradient = ctx.createRadialGradient(
+      this.headX, this.headY, 0,
+      this.headX, this.headY, 8
+    );
+    headGradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+    headGradient.addColorStop(0.3, 'rgba(240, 248, 255, 0.9)');
+    headGradient.addColorStop(0.6, 'rgba(200, 220, 255, 0.5)');
+    headGradient.addColorStop(1, 'rgba(150, 180, 255, 0)');
+
+    ctx.fillStyle = headGradient;
+    ctx.beginPath();
+    ctx.arc(this.headX, this.headY, 8, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  isDead() {
+    return !this.alive;
+  }
 }
 
 /**
