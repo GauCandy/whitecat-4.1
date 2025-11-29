@@ -94,7 +94,7 @@ async function startBot() {
 
     // Wait for bot to be ready
     await new Promise<void>((resolve) => {
-      client.once('ready', async () => {
+      client.once('clientReady', async () => {
         log('\n==========================================', colors.cyan);
         log('Discord Bot is ready!', colors.green);
         log('==========================================\n', colors.cyan);

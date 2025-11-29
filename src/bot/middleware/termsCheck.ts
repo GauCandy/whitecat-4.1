@@ -5,7 +5,7 @@
 
 import { ChatInputCommandInteraction, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } from 'discord.js';
 import { query } from '../../db/pool';
-import { buildOAuth2URL } from '../utils/oauth';
+import { buildUserInstallURL } from '../utils/oauth';
 import { t } from '../../i18n';
 
 /**
@@ -65,9 +65,10 @@ async function sendTermsEmbed(
   try {
     console.log('\x1b[36m[Terms] Building OAuth2 URL...\x1b[0m');
 
-    // Build OAuth2 authorization URL
-    const oauthUrl = buildOAuth2URL();
-    console.log(`\x1b[36m[Terms] OAuth URL: ${oauthUrl}\x1b[0m`);
+    // Build OAuth2 authorization URL with integration_type=1 (User Install)
+    const oauthUrl = buildUserInstallURL();
+
+    console.log(`\x1b[36m[Terms] OAuth URL (User Install, integration_type=1): ${oauthUrl}\x1b[0m`);
 
     // Create embed
     console.log('\x1b[36m[Terms] Creating embed...\x1b[0m');

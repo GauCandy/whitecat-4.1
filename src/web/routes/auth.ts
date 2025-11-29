@@ -5,13 +5,40 @@
 
 import { Router } from 'express';
 import crypto from 'crypto';
-import { buildOAuth2URL } from '../../bot/utils/oauth';
+import { buildOAuth2URL, buildUserInstallURL, buildBotInviteURL } from '../services/discord-invite-service';
 import { upsertUser, upsertOAuthTokens } from '../services/userService';
 import pool from '../../db/pool';
 
 const router = Router();
 
-// Redirect to Discord OAuth
+// Redirect to User Install (integration_type=1)
+router.get('/user-install', (req, res) => {
+  try {
+    const authUrl = buildUserInstallURL();
+    res.redirect(authUrl);
+  } catch (error) {
+    console.error('[AUTH] Error building User Install URL:', error);
+    res.status(500).send('OAuth configuration error');
+  }
+});
+
+// Redirect to Guild Install (integration_type=0)
+router.get('/guild-install', (req, res) => {
+  try {
+    const authUrl = buildBotInviteURL();
+    res.redirect(authUrl);
+  } catch (error) {
+    console.error('[AUTH] Error building Guild Install URL:', error);
+    res.status(500).send('OAuth configuration error');
+  }
+});
+
+// Alias: /invite → /guild-install (backward compatibility)
+router.get('/invite', (req, res) => {
+  res.redirect('/auth/guild-install');
+});
+
+// Redirect to Discord OAuth (User Login - no integration_type)
 router.get('/discord', (req, res) => {
   try {
     const authUrl = buildOAuth2URL();
@@ -28,11 +55,11 @@ router.get('/callback', async (req, res) => {
 
   if (error) {
     console.error('[AUTH] OAuth error:', error);
-    return res.redirect('/?error=access_denied');
+    return res.redirect('/auth/fail?error=access_denied');
   }
 
   if (!code || typeof code !== 'string') {
-    return res.redirect('/?error=invalid_code');
+    return res.redirect('/auth/fail?error=invalid_code');
   }
 
   try {
@@ -118,11 +145,11 @@ router.get('/callback', async (req, res) => {
       res.redirect('/auth/success');
     } catch (dbError) {
       console.error('[AUTH] Database error:', dbError);
-      res.redirect('/?error=database_error');
+      res.redirect('/auth/fail?error=database_error');
     }
   } catch (error) {
     console.error('[AUTH] Callback error:', error);
-    res.redirect('/?error=auth_failed');
+    res.redirect('/auth/fail?error=auth_failed');
   }
 });
 
@@ -160,6 +187,23 @@ router.get('/success', async (req, res) => {
     console.error('[AUTH] Error in success page:', error);
     res.redirect('/login');
   }
+});
+
+// OAuth Fail Page
+router.get('/fail', (req, res) => {
+  const errorCode = req.query.error || 'unknown_error';
+
+  const errorMessages: Record<string, string> = {
+    access_denied: 'Bạn đã từ chối quyền truy cập',
+    invalid_code: 'Mã xác thực không hợp lệ',
+    database_error: 'Lỗi cơ sở dữ liệu',
+    auth_failed: 'Xác thực thất bại',
+    unknown_error: 'Lỗi không xác định',
+  };
+
+  res.render('auth-fail', {
+    error_message: errorMessages[errorCode as string] || errorMessages.unknown_error,
+  });
 });
 
 // Logout

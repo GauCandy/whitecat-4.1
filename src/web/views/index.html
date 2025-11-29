@@ -38,14 +38,14 @@
       <!-- Buttons -->
       <div class="flex flex-col sm:flex-row gap-4 justify-center mb-16">
 
-        <!-- Get Started Button -->
+        <!-- User Install Button (integration_type=1) -->
         <a href="/login"
            class="px-8 py-4 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 transition-colors">
           Bắt đầu
         </a>
 
-        <a href="https://discord.com/api/oauth2/authorize?client_id={{CLIENT_ID}}&permissions=8&scope=bot%20applications.commands"
-           target="_blank"
+        <!-- Guild Install Button (integration_type=0) -->
+        <a href="/auth/guild-install"
            class="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-black transition-colors">
           Add to Server
         </a>
