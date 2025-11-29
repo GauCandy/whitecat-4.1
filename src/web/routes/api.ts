@@ -5,6 +5,7 @@
 
 import { Router } from 'express';
 import pool from '../../db/pool';
+import { getUserManageableGuilds, syncUserGuildPermissions } from '../services/guild-sync-service';
 
 const router = Router();
 
@@ -35,6 +36,134 @@ router.get('/support-invite', async (_req, res) => {
   } catch (error) {
     console.error('[API] Error fetching support invite:', error);
     res.status(500).send('Failed to fetch support server invite');
+  }
+});
+
+// Get user's manageable guilds (requires authentication)
+router.get('/user/guilds', async (req, res) => {
+  try {
+    // Check session
+    const sessionToken = req.cookies?.session_token;
+    if (!sessionToken) {
+      return res.status(401).json({ error: 'Not authenticated' });
+    }
+
+    // Get user from session
+    const sessionResult = await pool.query(
+      `SELECT u.discord_id, u.id
+       FROM web_sessions ws
+       JOIN users u ON ws.user_id = u.id
+       WHERE ws.session_token = $1 AND ws.expires_at > CURRENT_TIMESTAMP`,
+      [sessionToken]
+    );
+
+    if (sessionResult.rows.length === 0) {
+      return res.status(401).json({ error: 'Invalid or expired session' });
+    }
+
+    const user = sessionResult.rows[0];
+
+    // Permissions are kept fresh by Discord event listeners (guildMemberUpdate, etc.)
+    // No need for auto-sync on dashboard access
+
+    // Get user's manageable guilds from database
+    const userGuilds = await getUserManageableGuilds(user.discord_id);
+
+    // Enrich with guild info (name, icon) from guilds table
+    const guildIds = userGuilds.map(g => g.guild_id);
+    const guildsInfo = await pool.query(
+      `SELECT guild_id, guild_name, guild_icon
+       FROM guilds
+       WHERE guild_id = ANY($1) AND left_at IS NULL`,
+      [guildIds]
+    );
+
+    const guildInfoMap = new Map(
+      guildsInfo.rows.map(row => [row.guild_id, { name: row.guild_name, icon: row.guild_icon }])
+    );
+
+    // Format guilds for response
+    const guilds = userGuilds.map(guild => ({
+      id: guild.guild_id,
+      name: guildInfoMap.get(guild.guild_id)?.name || 'Unknown Server',
+      icon: guildInfoMap.get(guild.guild_id)?.icon || null,
+      permissions: guild.permissions,
+      lastSynced: guild.last_synced,
+    }));
+
+    res.json({
+      guilds: guilds,
+      count: guilds.length,
+    });
+  } catch (error) {
+    console.error('[API] Error fetching user guilds:', error);
+    res.status(500).json({ error: 'Failed to fetch guilds' });
+  }
+});
+
+// Manually trigger guild sync (requires authentication)
+router.post('/user/guilds/sync', async (req, res) => {
+  try {
+    // Check session
+    const sessionToken = req.cookies?.session_token;
+    if (!sessionToken) {
+      return res.status(401).json({ error: 'Not authenticated' });
+    }
+
+    // Get user and access token
+    const result = await pool.query(
+      `SELECT u.discord_id, ot.access_token
+       FROM web_sessions ws
+       JOIN users u ON ws.user_id = u.id
+       JOIN oauth_tokens ot ON ot.user_id = u.id
+       WHERE ws.session_token = $1
+         AND ws.expires_at > CURRENT_TIMESTAMP
+         AND ot.token_expires_at > CURRENT_TIMESTAMP`,
+      [sessionToken]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: 'Invalid session or expired OAuth token' });
+    }
+
+    const { discord_id, access_token } = result.rows[0];
+
+    // Rate limiting: Check last sync time
+    const MANUAL_SYNC_COOLDOWN = 2 * 60 * 1000; // 2 minutes for manual sync
+    const syncCheck = await pool.query(
+      `SELECT MAX(last_synced) as last_sync
+       FROM user_guild_permissions
+       WHERE discord_id = $1`,
+      [discord_id]
+    );
+
+    const lastSync = syncCheck.rows[0]?.last_sync;
+    if (lastSync) {
+      const timeSinceSync = Date.now() - new Date(lastSync).getTime();
+      if (timeSinceSync < MANUAL_SYNC_COOLDOWN) {
+        const waitTime = Math.ceil((MANUAL_SYNC_COOLDOWN - timeSinceSync) / 1000);
+        return res.status(429).json({
+          error: 'Rate limited',
+          message: `Please wait ${waitTime} seconds before syncing again`,
+          retryAfter: waitTime,
+        });
+      }
+    }
+
+    // Sync guilds
+    await syncUserGuildPermissions(discord_id, access_token);
+
+    // Get updated guilds
+    const userGuilds = await getUserManageableGuilds(discord_id);
+
+    res.json({
+      success: true,
+      message: 'Guilds synced successfully',
+      count: userGuilds.length,
+    });
+  } catch (error) {
+    console.error('[API] Error syncing guilds:', error);
+    res.status(500).json({ error: 'Failed to sync guilds' });
   }
 });
 

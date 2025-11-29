@@ -16,48 +16,211 @@
   <!-- Starry Sky Background (created by JavaScript) -->
 
   <!-- Main Content -->
-  <div class="relative z-10 min-h-screen flex flex-col items-center justify-center p-8">
+  <div class="relative z-10 min-h-screen p-8">
 
-    <div class="text-center max-w-2xl">
+    <!-- Header -->
+    <div class="max-w-6xl mx-auto mb-8">
+      <div class="flex items-center justify-between">
 
-      <!-- User Avatar -->
+        <!-- User Info -->
+        <div class="flex items-center gap-4">
+          <img
+            src="https://cdn.discordapp.com/avatars/{{id}}/{{avatar}}.png"
+            alt="Avatar"
+            class="w-16 h-16 rounded-full border-4 border-white shadow-lg"
+            onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'"
+          />
+          <div>
+            <h1 class="text-2xl font-bold text-white">{{username}}</h1>
+            <p class="text-gray-400">WhiteCat Dashboard</p>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-3">
+          <button
+            id="refreshBtn"
+            class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+            </svg>
+            <span id="refreshText">Làm mới</span>
+          </button>
+
+          <a href="/auth/logout"
+             class="px-6 py-3 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-black transition-colors">
+            Đăng xuất
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Server List -->
+    <div class="max-w-6xl mx-auto">
+
+      <!-- Title -->
       <div class="mb-6">
-        <img
-          src="https://cdn.discordapp.com/avatars/{{id}}/{{avatar}}.png"
-          alt="Avatar"
-          class="w-24 h-24 rounded-full mx-auto border-4 border-white shadow-lg"
-          onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'"
-        />
+        <h2 class="text-3xl font-black text-white mb-2">Máy chủ của bạn</h2>
+        <p class="text-gray-400">Các máy chủ mà bạn có quyền quản lý bot</p>
       </div>
 
-      <!-- Welcome Message -->
-      <h1 class="text-4xl md:text-5xl font-black mb-4 text-white">
-        Xin chào, {{username}}!
-      </h1>
-
-      <p class="text-xl text-gray-400 mb-12">
-        Dashboard đang được phát triển...
-      </p>
-
-      <!-- Action Buttons -->
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-
-        <a href="/"
-           class="px-8 py-4 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 transition-colors">
-          Trang chủ
-        </a>
-
-        <a href="/auth/logout"
-           class="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-black transition-colors">
-          Đăng xuất
-        </a>
-
+      <!-- Loading State -->
+      <div id="loading" class="text-center py-12">
+        <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+        <p class="text-gray-400 mt-4">Đang tải danh sách máy chủ...</p>
       </div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="hidden text-center py-12">
+        <div class="text-6xl mb-4">📭</div>
+        <h3 class="text-2xl font-bold text-white mb-2">Không có máy chủ nào</h3>
+        <p class="text-gray-400 mb-6">Bạn chưa có quyền quản lý bot ở máy chủ nào</p>
+        <a href="/auth/guild-install"
+           class="inline-block px-8 py-4 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 transition-colors">
+          Thêm bot vào máy chủ
+        </a>
+      </div>
+
+      <!-- Server Grid -->
+      <div id="serverGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
 
     </div>
 
   </div>
 
   <script src="/js/main.js"></script>
+  <script>
+    // Fetch and display guilds
+    async function loadGuilds() {
+      const loading = document.getElementById('loading');
+      const emptyState = document.getElementById('emptyState');
+      const serverGrid = document.getElementById('serverGrid');
+
+      try {
+        loading.classList.remove('hidden');
+        emptyState.classList.add('hidden');
+        serverGrid.innerHTML = '';
+
+        const response = await fetch('/api/user/guilds');
+        if (!response.ok) {
+          throw new Error('Failed to fetch guilds');
+        }
+
+        const data = await response.json();
+        const guilds = data.guilds || [];
+
+        loading.classList.add('hidden');
+
+        if (guilds.length === 0) {
+          emptyState.classList.remove('hidden');
+        } else {
+          // Display guilds
+          guilds.forEach(guild => {
+            const card = createGuildCard(guild);
+            serverGrid.appendChild(card);
+          });
+        }
+
+      } catch (error) {
+        console.error('Error loading guilds:', error);
+        loading.classList.add('hidden');
+        serverGrid.innerHTML = `
+          <div class="col-span-full text-center py-12">
+            <div class="text-6xl mb-4">⚠️</div>
+            <h3 class="text-2xl font-bold text-white mb-2">Lỗi tải dữ liệu</h3>
+            <p class="text-gray-400">${error.message}</p>
+          </div>
+        `;
+      }
+    }
+
+    // Create guild card element
+    function createGuildCard(guild) {
+      const card = document.createElement('div');
+      card.className = 'bg-white/10 backdrop-blur-sm rounded-lg p-6 hover:bg-white/20 transition-all cursor-pointer border border-white/20';
+
+      const lastSynced = new Date(guild.lastSynced);
+      const timeAgo = getTimeAgo(lastSynced);
+
+      // Build icon URL or use fallback
+      const iconUrl = guild.icon
+        ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png?size=128`
+        : null;
+
+      const iconHtml = iconUrl
+        ? `<img src="${iconUrl}" alt="${guild.name}" class="w-16 h-16 rounded-lg object-cover flex-shrink-0" onerror="this.outerHTML='<div class=\\'w-16 h-16 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold flex-shrink-0\\'>${guild.name.charAt(0).toUpperCase()}</div>'">`
+        : `<div class="w-16 h-16 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">${guild.name.charAt(0).toUpperCase()}</div>`;
+
+      card.innerHTML = `
+        <div class="flex items-start gap-4">
+          ${iconHtml}
+          <div class="flex-1 min-w-0">
+            <h3 class="text-xl font-bold text-white mb-1 truncate">${guild.name}</h3>
+            <p class="text-sm text-gray-400 mb-3">ID: ${guild.id}</p>
+            <div class="flex items-center gap-2 text-xs text-gray-500">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <span>Cập nhật ${timeAgo}</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      card.addEventListener('click', () => {
+        // TODO: Navigate to server settings
+        console.log('Manage server:', guild.id, guild.name);
+      });
+
+      return card;
+    }
+
+    // Get time ago string
+    function getTimeAgo(date) {
+      const seconds = Math.floor((new Date() - date) / 1000);
+
+      if (seconds < 60) return 'vừa xong';
+      if (seconds < 3600) return `${Math.floor(seconds / 60)} phút trước`;
+      if (seconds < 86400) return `${Math.floor(seconds / 3600)} giờ trước`;
+      return `${Math.floor(seconds / 86400)} ngày trước`;
+    }
+
+    // Refresh guilds
+    document.getElementById('refreshBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('refreshBtn');
+      const text = document.getElementById('refreshText');
+
+      btn.disabled = true;
+      text.textContent = 'Đang làm mới...';
+
+      try {
+        const response = await fetch('/api/user/guilds/sync', { method: 'POST' });
+        const data = await response.json();
+
+        if (response.ok) {
+          // Reload guilds after sync
+          await loadGuilds();
+          text.textContent = 'Đã làm mới!';
+          setTimeout(() => {
+            text.textContent = 'Làm mới';
+            btn.disabled = false;
+          }, 2000);
+        } else {
+          throw new Error(data.message || 'Sync failed');
+        }
+      } catch (error) {
+        console.error('Error syncing:', error);
+        text.textContent = error.message;
+        setTimeout(() => {
+          text.textContent = 'Làm mới';
+          btn.disabled = false;
+        }, 3000);
+      }
+    });
+
+    // Load guilds on page load
+    loadGuilds();
+  </script>
 </body>
 </html>

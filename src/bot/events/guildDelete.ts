@@ -5,6 +5,7 @@
 
 import { Events, Guild } from 'discord.js';
 import { query } from '../../db/pool';
+import { removeGuildPermissions } from '../services/permission-sync-service';
 
 export default {
   name: Events.GuildDelete,
@@ -23,6 +24,9 @@ export default {
       );
 
       console.log(`\x1b[33m[GUILD] Guild marked as left in database: ${guild.name}\x1b[0m`);
+
+      // Remove all user guild permissions for this guild
+      await removeGuildPermissions(guild.id);
 
     } catch (error) {
       console.error('[GUILD DELETE] Error updating guild in database:', error);

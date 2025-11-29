@@ -34,22 +34,24 @@ export default {
       );
 
       if (existingGuild.rows.length > 0) {
-        // Guild exists, update left_at to null (rejoined)
+        // Guild exists, update left_at to null (rejoined) + cache guild info
         await query(
           `UPDATE guilds
            SET left_at = NULL,
-               joined_at = CURRENT_TIMESTAMP
+               joined_at = CURRENT_TIMESTAMP,
+               guild_name = $2,
+               guild_icon = $3
            WHERE guild_id = $1`,
-          [guild.id]
+          [guild.id, guild.name, guild.icon]
         );
 
         console.log(`\x1b[33m[GUILD] Rejoined guild updated in database: ${guild.name}\x1b[0m`);
       } else {
-        // New guild, insert into database (locale and prefix are NULL by default)
+        // New guild, insert into database with cached info
         await query(
-          `INSERT INTO guilds (guild_id, joined_at)
-           VALUES ($1, CURRENT_TIMESTAMP)`,
-          [guild.id]
+          `INSERT INTO guilds (guild_id, joined_at, guild_name, guild_icon)
+           VALUES ($1, CURRENT_TIMESTAMP, $2, $3)`,
+          [guild.id, guild.name, guild.icon]
         );
 
         console.log(`\x1b[32m[GUILD] New guild added to database: ${guild.name}\x1b[0m`);

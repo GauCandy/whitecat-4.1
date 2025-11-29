@@ -7,6 +7,7 @@ import { Router } from 'express';
 import crypto from 'crypto';
 import { buildOAuth2URL, buildUserInstallURL, buildBotInviteURL } from '../services/discord-invite-service';
 import { upsertUser, upsertOAuthTokens } from '../services/userService';
+import { syncUserGuildPermissions } from '../services/guild-sync-service';
 import pool from '../../db/pool';
 
 const router = Router();
@@ -110,6 +111,11 @@ router.get('/callback', async (req, res) => {
         accessToken: tokenData.access_token,
         refreshToken: tokenData.refresh_token,
         expiresIn: tokenData.expires_in,
+      });
+
+      // Sync user's guild permissions (async, don't wait)
+      syncUserGuildPermissions(userData.id, tokenData.access_token).catch(error => {
+        console.error('[AUTH] Failed to sync guild permissions:', error);
       });
 
       // Generate session token

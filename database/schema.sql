@@ -142,6 +142,8 @@ CREATE INDEX idx_transactions_created_at ON transactions(created_at DESC);
 CREATE TABLE guilds (
   id BIGSERIAL PRIMARY KEY,
   guild_id VARCHAR(20) UNIQUE NOT NULL,          -- Discord Guild ID
+  guild_name VARCHAR(100),                       -- Guild name (cached for web display)
+  guild_icon VARCHAR(100),                       -- Guild icon hash (cached for web display)
   locale VARCHAR(10),                            -- Ngôn ngữ: 'en-US', 'vi' (NULL = dùng DEFAULT_LOCALE từ env)
   prefix VARCHAR(10),                            -- Prefix lệnh text (NULL = dùng BOT_PREFIX từ env)
   joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Bot join khi nào
@@ -149,6 +151,7 @@ CREATE TABLE guilds (
 );
 
 CREATE INDEX idx_guilds_guild_id ON guilds(guild_id);
+CREATE INDEX idx_guilds_guild_name ON guilds(guild_name);
 
 -- ==========================================
 -- 9. AUTO_RESPONSES - Tự động trả lời
