@@ -142,4 +142,3 @@ whitecat-4.1/
 
 ## License
 
-MIT
